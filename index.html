@@ -781,18 +781,23 @@
             </div>
 
             <div class="card">
-              <div class="card-head"><h2>Justificación del Estudiante</h2></div>
+              <div class="card-head"><h2 id="dJustTitulo">Justificación del Estudiante</h2></div>
               <div class="card-body">
                 <div class="just" id="dJust"></div>
               </div>
             </div>
 
             <div class="card" id="dProcesoCard" hidden>
-              <div class="card-head"><h2>Datos del proceso</h2></div>
+              <div class="card-head"><h2 id="dProcesoTitulo">Datos del proceso</h2></div>
               <div class="card-body" id="dProcesoExtra"></div>
             </div>
 
-            <div class="card">
+            <div class="card" id="dPazCard" hidden>
+              <div class="card-head"><h2>Documentación requerida</h2></div>
+              <div class="card-body" id="dPazSalvos"></div>
+            </div>
+
+            <div class="card" id="dAnexosCard">
               <div class="card-head"><h2>Anexos adjuntos</h2><span class="count" id="dAnexosCount"></span></div>
               <div class="card-body">
                 <ul class="anexos" id="dAnexos"></ul>
@@ -857,38 +862,38 @@ const PROC = {
 };
 
 const DATA = [
-  {rad:'2026-CM-0148', est:'Laura Valentina Muñoz',  doc:'1061789234', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-28T09:12', estado:'Pendiente',  just:'Solicito la cancelación de matrícula del periodo académico por motivos de salud debidamente certificados por la EPS, que me impiden continuar con las actividades académicas del semestre.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf','Historia académica.pdf'],
+  {rad:'2026-CM-0148', est:'Laura Valentina Muñoz',  doc:'1061789234', codigo:'104622010148', correo:'lvmunoz@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-28T09:12', estado:'Pendiente',  just:'Solicito la cancelación de matrícula del periodo académico por motivos de salud debidamente certificados por la EPS, que me impiden continuar con las actividades académicas del semestre.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf','Historia académica.pdf'],
    asignaturas:[{cod:'8506105-M', nombre:'Estructuras de Datos'},{cod:'8506110-M', nombre:'Bases de Datos I'},{cod:'8506118-M', nombre:'Arquitectura de Computadores'},{cod:'8506122-M', nombre:'Cálculo en Varias Variables'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-25'},{entidad:'Bienestar Universitario', archivo:'Paz y salvo Bienestar.pdf', fecha:'2026-07-26'},{entidad:'División Financiera', archivo:'Paz y salvo Financiero.pdf', fecha:'2026-07-27'}]},
-  {rad:'2026-ES-0147', est:'Andrés Felipe Chantre',  doc:'1002345671', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-28T08:40', estado:'Pendiente',  just:'Solicito examen supletorio de Señales y Sistemas, presentado el 12 de julio, por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf','Visto bueno del docente.pdf'],
+  {rad:'2026-ES-0147', est:'Andrés Felipe Chantre',  doc:'1002345671', codigo:'104622010147', correo:'achantre@unicauca.edu.co', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-28T08:40', estado:'Pendiente',  just:'Solicito examen supletorio de Señales y Sistemas, presentado el 12 de julio, por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf','Visto bueno del docente.pdf'],
    examen:'Señales y Sistemas', codExamen:'8507214-M', grupo:'A', fechaExamen:'2026-07-12', propuesta:'2026-08-05', telefono:'3157789021', firmaDocente:'Firma docente - Ing. Ramírez.pdf', causa:'otra'},
-  {rad:'2026-CA-0145', est:'María José Ordóñez',     doc:'1063998877', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-27T15:05', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Control Digital debido al cruce de horario con la práctica empresarial autorizada por coordinación.', anexos:['Solicitud firmada.pdf','Carta de coordinación.pdf'],
+  {rad:'2026-CA-0145', est:'María José Ordóñez',     doc:'1063998877', codigo:'104622010145', correo:'mordonez@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-27T15:05', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Control Digital debido al cruce de horario con la práctica empresarial autorizada por coordinación.', anexos:['Solicitud firmada.pdf','Carta de coordinación.pdf'],
    asignaturas:[{cod:'8508219-M', nombre:'Control Digital'}]},
-  {rad:'2026-ES-0144', est:'Juan Sebastián Paz',     doc:'1004556612', prog:'Tecnología en Telemática',    proc:PROC.ES, fecha:'2026-07-27T11:22', estado:'En Gestión', esperaDe:'Decano', just:'Solicito examen supletorio de Bases de Datos por calamidad doméstica presentada el día de la evaluación.', anexos:['Solicitud firmada.pdf','Certificado de defunción.pdf'],
+  {rad:'2026-ES-0144', est:'Juan Sebastián Paz',     doc:'1004556612', codigo:'104622010144', correo:'jspaz@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.ES, fecha:'2026-07-27T11:22', estado:'En Gestión', esperaDe:'Decano', just:'Solicito examen supletorio de Bases de Datos por calamidad doméstica presentada el día de la evaluación.', anexos:['Solicitud firmada.pdf','Certificado de defunción.pdf'],
    examen:'Bases de Datos', codExamen:'8506110-M', grupo:'B', fechaExamen:'2026-07-11', propuesta:'2026-08-04', telefono:'3204561278', firmaDocente:'Firma docente - Ing. Salazar.pdf', causa:'otra'},
-  {rad:'2026-CM-0142', est:'Diana Carolina Bolaños', doc:'1061223344', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T16:48', estado:'Pendiente de Respuesta', decisionDecano:'Aprobada', resolucion:'Resolución 0142-2026.pdf', just:'Solicito la cancelación de matrícula por traslado laboral fuera de la ciudad de Popayán a partir del mes de agosto.', anexos:['Solicitud firmada.pdf','Carta laboral.pdf','Historia académica.pdf'],
+  {rad:'2026-CM-0142', est:'Diana Carolina Bolaños', doc:'1061223344', codigo:'104622010142', correo:'dbolanos@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T16:48', estado:'Pendiente de Respuesta', decisionDecano:'Aprobada', resolucion:'Resolución 0142-2026.pdf', just:'Solicito la cancelación de matrícula por traslado laboral fuera de la ciudad de Popayán a partir del mes de agosto.', anexos:['Solicitud firmada.pdf','Carta laboral.pdf','Historia académica.pdf'],
    asignaturas:[{cod:'8506201-M', nombre:'Ingeniería de Software I'},{cod:'8506205-M', nombre:'Redes de Computadores'},{cod:'8506210-M', nombre:'Sistemas Operativos'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-24'},{entidad:'División Financiera', archivo:'Paz y salvo Financiero.pdf', fecha:'2026-07-25'}]},
-  {rad:'2026-CA-0139', est:'Kevin Steven Muñoz',     doc:'1007889900', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.CA, fecha:'2026-07-24T10:15', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0139-2026.pdf', just:'Solicito la cancelación de la asignatura Electrónica Analógica II por bajo rendimiento derivado de una situación familiar.', anexos:['Solicitud firmada.pdf','Historia académica.pdf'],
+  {rad:'2026-CA-0139', est:'Kevin Steven Muñoz',     doc:'1007889900', codigo:'104622010139', correo:'kmunoz@unicauca.edu.co', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.CA, fecha:'2026-07-24T10:15', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0139-2026.pdf', just:'Solicito la cancelación de la asignatura Electrónica Analógica II por bajo rendimiento derivado de una situación familiar.', anexos:['Solicitud firmada.pdf','Historia académica.pdf'],
    asignaturas:[{cod:'8509118-M', nombre:'Electrónica Analógica II'}]},
-  {rad:'2026-ES-0138', est:'Valeria Astudillo',      doc:'1062556677', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-24T09:03', estado:'Respondida', decision:'Aprobada', just:'Solicito examen supletorio de Ingeniería de Software por participación en la representación deportiva de la Universidad.', anexos:['Solicitud firmada.pdf','Certificado de Bienestar.pdf'],
+  {rad:'2026-ES-0138', est:'Valeria Astudillo',      doc:'1062556677', codigo:'104622010138', correo:'vastudillo@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-24T09:03', estado:'Respondida', decision:'Aprobada', just:'Solicito examen supletorio de Ingeniería de Software por participación en la representación deportiva de la Universidad.', anexos:['Solicitud firmada.pdf','Certificado de Bienestar.pdf'],
    examen:'Ingeniería de Software', codExamen:'8506201-M', grupo:'A', fechaExamen:'2026-07-10', propuesta:'2026-08-02', telefono:'3112349087', firmaDocente:'Firma docente - Ing. Bolaños.pdf', causa:'otra'},
-  {rad:'2026-CM-0136', est:'Óscar Iván Chicangana',  doc:'1059334455', prog:'Ingeniería en Automática Industrial', proc:PROC.CM, fecha:'2026-07-23T14:30', estado:'Respondida', decision:'Rechazada', observacion:'No se anexó soporte suficiente que justifique la cancelación por motivos económicos alegados.', just:'Solicito la cancelación de matrícula por razones económicas que me impiden sostener el semestre en curso.', anexos:['Solicitud firmada.pdf','Declaración de renta familiar.pdf'],
+  {rad:'2026-CM-0136', est:'Óscar Iván Chicangana',  doc:'1059334455', codigo:'104622010136', correo:'ochicangana@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CM, fecha:'2026-07-23T14:30', estado:'Respondida', decision:'Rechazada', observacion:'No se anexó soporte suficiente que justifique la cancelación por motivos económicos alegados.', just:'Solicito la cancelación de matrícula por razones económicas que me impiden sostener el semestre en curso.', anexos:['Solicitud firmada.pdf','Declaración de renta familiar.pdf'],
    asignaturas:[{cod:'8510103-M', nombre:'Automatización Industrial'},{cod:'8510108-M', nombre:'Instrumentación Industrial'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-20'}]},
-  {rad:'2026-CA-0133', est:'Sara Camila Yandi',      doc:'1064112233', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T08:57', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Redes de Computadores por incompatibilidad con el horario de la asignatura homologada.', anexos:['Solicitud firmada.pdf','Acta de homologación.pdf'],
+  {rad:'2026-CA-0133', est:'Sara Camila Yandi',      doc:'1064112233', codigo:'104622010133', correo:'syandi@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T08:57', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Redes de Computadores por incompatibilidad con el horario de la asignatura homologada.', anexos:['Solicitud firmada.pdf','Acta de homologación.pdf'],
    asignaturas:[{cod:'8511112-M', nombre:'Redes de Computadores'}]},
-  {rad:'2026-ES-0131', est:'Nicolás Gómez Trujillo', doc:'1003667788', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-21T17:11', estado:'Pendiente de Verificación', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Comunicaciones Digitales por incapacidad médica de tres días.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf'],
+  {rad:'2026-ES-0131', est:'Nicolás Gómez Trujillo', doc:'1003667788', codigo:'104622010131', correo:'ngomez@unicauca.edu.co', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-21T17:11', estado:'Pendiente de Verificación', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Comunicaciones Digitales por incapacidad médica de tres días.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf'],
    examen:'Comunicaciones Digitales', codExamen:'8507230-M', grupo:'C', fechaExamen:'2026-07-16', propuesta:'2026-08-08', telefono:'3186672233', firmaDocente:'Firma docente - Ing. Estrada.pdf', causa:'cruce',
    cruce:{asignatura:'Procesamiento Digital de Señales', codigo:'8507235-M', fecha:'2026-08-08', hora:'08:00', firmaDocente:'Firma docente cruce - Ing. Paredes.pdf'}},
-  {rad:'2026-CM-0129', est:'Angie Paola Rengifo',    doc:'1060778899', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-20T13:24', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0129-2026.pdf', just:'Solicito la cancelación de matrícula por licencia de maternidad durante el periodo académico.', anexos:['Solicitud firmada.pdf','Certificado médico.pdf'],
+  {rad:'2026-CM-0129', est:'Angie Paola Rengifo',    doc:'1060778899', codigo:'104622010129', correo:'arengifo@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-20T13:24', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0129-2026.pdf', just:'Solicito la cancelación de matrícula por licencia de maternidad durante el periodo académico.', anexos:['Solicitud firmada.pdf','Certificado médico.pdf'],
    asignaturas:[{cod:'8506301-M', nombre:'Ingeniería de Software II'},{cod:'8506305-M', nombre:'Inteligencia Artificial'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-18'},{entidad:'Bienestar Universitario', archivo:'Paz y salvo Bienestar.pdf', fecha:'2026-07-19'},{entidad:'División Financiera', archivo:'Paz y salvo Financiero.pdf', fecha:'2026-07-20'}]},
-  {rad:'2026-CA-0127', est:'Daniel Esteban Vidal',   doc:'1058445566', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-19T10:02', estado:'Pendiente de Respuesta', decisionDecano:'Rechazada', just:'Solicito la cancelación de la asignatura Instrumentación Industrial por superposición con el curso de nivelación autorizado.', anexos:['Solicitud firmada.pdf'],
+  {rad:'2026-CA-0127', est:'Daniel Esteban Vidal',   doc:'1058445566', codigo:'104622010127', correo:'dvidal@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-19T10:02', estado:'Pendiente de Respuesta', decisionDecano:'Rechazada', just:'Solicito la cancelación de la asignatura Instrumentación Industrial por superposición con el curso de nivelación autorizado.', anexos:['Solicitud firmada.pdf'],
    asignaturas:[{cod:'8510108-M', nombre:'Instrumentación Industrial'}]},
-  {rad:'2026-ES-0124', est:'Laura Sofía Muñoz',      doc:'1061789234', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-18T09:45', estado:'Respondida', decision:'Rechazada', observacion:'La incapacidad médica presentada no cubre la fecha de la evaluación programada.', just:'Solicito examen supletorio de Estructuras de Datos por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf'],
+  {rad:'2026-ES-0124', est:'Laura Sofía Muñoz',      doc:'1061789234', codigo:'104622010124', correo:'lsmunoz@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-18T09:45', estado:'Respondida', decision:'Rechazada', observacion:'La incapacidad médica presentada no cubre la fecha de la evaluación programada.', just:'Solicito examen supletorio de Estructuras de Datos por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf'],
    examen:'Estructuras de Datos', codExamen:'8506105-M', grupo:'B', fechaExamen:'2026-07-09', propuesta:'2026-07-31', telefono:'3167890234', firmaDocente:'Firma docente - Ing. Castillo.pdf', causa:'otra'},
-  {rad:'2026-CM-0121', est:'Camilo Andrés Ledezma',  doc:'1005990011', prog:'Tecnología en Telemática',    proc:PROC.CM, fecha:'2026-07-17T16:20', estado:'En Gestión', esperaDe:'Estudiante', just:'Solicito la cancelación de matrícula por prestación del servicio militar obligatorio.', anexos:['Solicitud firmada.pdf','Orden de presentación.pdf'],
+  {rad:'2026-CM-0121', est:'Camilo Andrés Ledezma',  doc:'1005990011', codigo:'104622010121', correo:'cledezma@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.CM, fecha:'2026-07-17T16:20', estado:'En Gestión', esperaDe:'Estudiante', just:'Solicito la cancelación de matrícula por prestación del servicio militar obligatorio.', anexos:['Solicitud firmada.pdf','Orden de presentación.pdf'],
    asignaturas:[{cod:'8512101-M', nombre:'Telemática I'},{cod:'8512105-M', nombre:'Redes de Telecomunicaciones'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-15'}]}
 ];
@@ -1252,8 +1257,12 @@ function abrirDetallePagina(rad, origen){
   detalleOrigen = origen;
   const esES = r.proc === PROC.ES;
 
+  const esCM = r.proc === PROC.CM;
+
   document.getElementById('dTitulo').textContent = 'Solicitud de ' + r.proc;
-  document.getElementById('dMeta').innerHTML = `
+  document.getElementById('dMeta').innerHTML = esCM
+    ? `<span>Radicado <b>${r.rad}</b></span>`
+    : `
     <span><b>${r.est}</b></span>
     <span>Doc. ${r.doc}</span>
     <span>${r.prog}</span>
@@ -1264,22 +1273,57 @@ function abrirDetallePagina(rad, origen){
 
   document.getElementById('dTimeline').innerHTML = timelineHTML(r);
 
-  document.getElementById('dGeneral').innerHTML = `
-    <div class="field"><label>Número de radicado</label><div class="value">${r.rad}</div></div>
-    <div class="field"><label>Tipo de proceso</label><div class="value">${r.proc}</div></div>
-    <div class="field"><label>Programa</label><div class="value">${r.prog}</div></div>
-    <div class="field"><label>Estudiante</label><div class="value">${r.est}</div></div>
-    <div class="field"><label>Número de documento</label><div class="value">${r.doc}</div></div>
-    <div class="field"><label>Fecha de radicación</label><div class="value">${fmtFecha(r.fecha)}</div></div>`;
+  if(esCM){
+    document.getElementById('dGeneral').innerHTML = `
+      <div class="field"><label>Nombre del estudiante</label><div class="value">${r.est}</div></div>
+      <div class="field"><label>Número de CC</label><div class="value">${r.doc}</div></div>
+      <div class="field"><label>Código</label><div class="value">${r.codigo || '—'}</div></div>
+      <div class="field"><label>Correo</label><div class="value">${r.correo || '—'}</div></div>
+      <div class="field"><label>Programa</label><div class="value">${r.prog}</div></div>
+      <div class="field"><label>Fecha de la solicitud</label><div class="value">${fmtFecha(r.fecha)}</div></div>`;
+  } else {
+    document.getElementById('dGeneral').innerHTML = `
+      <div class="field"><label>Número de radicado</label><div class="value">${r.rad}</div></div>
+      <div class="field"><label>Tipo de proceso</label><div class="value">${r.proc}</div></div>
+      <div class="field"><label>Programa</label><div class="value">${r.prog}</div></div>
+      <div class="field"><label>Estudiante</label><div class="value">${r.est}</div></div>
+      <div class="field"><label>Número de documento</label><div class="value">${r.doc}</div></div>
+      <div class="field"><label>Fecha de radicación</label><div class="value">${fmtFecha(r.fecha)}</div></div>`;
+  }
 
-  document.getElementById('dJust').textContent = r.just;
+  const dAnexosCard = document.getElementById('dAnexosCard');
+  if(esCM){
+    document.getElementById('dJustTitulo').textContent = 'Motivo de cancelación';
+    const soporte = (r.anexos && r.anexos.length)
+      ? `<div class="modal-sub">Soporte adjunto</div><ul class="anexos">${anexosHTML(r.anexos)}</ul>`
+      : `<div class="modal-sub">Soporte adjunto</div><p class="dialog-note">No se adjuntó soporte a esta solicitud.</p>`;
+    document.getElementById('dJust').innerHTML = `<div class="just-text">${r.just}</div>${soporte}`;
+    dAnexosCard.hidden = true;
+  } else {
+    document.getElementById('dJustTitulo').textContent = 'Justificación del Estudiante';
+    document.getElementById('dJust').textContent = r.just;
+    dAnexosCard.hidden = false;
+    document.getElementById('dAnexosCount').textContent = (r.anexos || []).length;
+    document.getElementById('dAnexos').innerHTML = anexosHTML(r.anexos);
+  }
 
-  const extra = renderProcesoExtra(r);
-  document.getElementById('dProcesoCard').hidden = !extra;
-  document.getElementById('dProcesoExtra').innerHTML = extra;
+  const dPazCard = document.getElementById('dPazCard');
+  if(esCM){
+    document.getElementById('dProcesoTitulo').textContent = 'Asignaturas matriculadas';
+    const asignaturas = (r.asignaturas || []).map(a => `<li>${a.cod} — ${a.nombre}</li>`).join('');
+    document.getElementById('dProcesoCard').hidden = false;
+    document.getElementById('dProcesoExtra').innerHTML = `<ul class="plain-list">${asignaturas}</ul>`;
 
-  document.getElementById('dAnexosCount').textContent = (r.anexos || []).length;
-  document.getElementById('dAnexos').innerHTML = anexosHTML(r.anexos);
+    const pazYSalvos = (r.pazYSalvos || []).map(p => `<li><strong>${p.entidad}:</strong> ${p.archivo} <small>(expedido ${fmtFechaSolo(p.fecha)})</small></li>`).join('');
+    dPazCard.hidden = false;
+    document.getElementById('dPazSalvos').innerHTML = `<ul class="plain-list">${pazYSalvos}</ul>`;
+  } else {
+    document.getElementById('dProcesoTitulo').textContent = 'Datos del proceso';
+    const extra = renderProcesoExtra(r);
+    document.getElementById('dProcesoCard').hidden = !extra;
+    document.getElementById('dProcesoExtra').innerHTML = extra;
+    dPazCard.hidden = true;
+  }
 
   const comprobanteCard = document.getElementById('dComprobanteCard');
   if(r.estado === 'Pendiente de Verificación' && r.comprobante){
