@@ -907,7 +907,7 @@ const DATA = [
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-20'}]},
   {rad:'2026-CA-0133', est:'Sara Camila Yandi',      doc:'1064112233', codigo:'104622010133', correo:'syandi@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T08:57', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Redes de Computadores por incompatibilidad con el horario de la asignatura homologada.', anexos:['Solicitud firmada.pdf','Acta de homologación.pdf'],
    asignaturas:[{cod:'8511112-M', nombre:'Redes de Computadores'}]},
-  {rad:'2026-ES-0131', est:'Nicolás Gómez Trujillo', doc:'1003667788', codigo:'104622010131', correo:'ngomez@unicauca.edu.co', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-21T17:11', estado:'Pendiente de Verificación', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Comunicaciones Digitales por incapacidad médica de tres días.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf'],
+  {rad:'2026-ES-0131', est:'Nicolás Gómez Trujillo', doc:'1003667788', codigo:'104622010131', correo:'ngomez@unicauca.edu.co', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-21T17:11', estado:'Pendiente de Verificación', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Comunicaciones Digitales por cruce de horario con la evaluación de Procesamiento Digital de Señales, programada el mismo día y hora.', anexos:['Solicitud firmada.pdf','Visto bueno del docente.pdf'],
    examen:'Comunicaciones Digitales', codExamen:'8507230-M', grupo:'C', fechaExamen:'2026-07-16', propuesta:'2026-08-08', telefono:'3186672233', firmaDocente:'Firma docente - Ing. Estrada.pdf', causa:'cruce',
    cruce:{asignatura:'Procesamiento Digital de Señales', codigo:'8507235-M', fecha:'2026-08-08', hora:'08:00', firmaDocente:'Firma docente cruce - Ing. Paredes.pdf'}},
   {rad:'2026-CM-0129', est:'Angie Paola Rengifo',    doc:'1060778899', codigo:'104622010129', correo:'arengifo@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-20T13:24', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0129-2026.pdf', just:'Solicito la cancelación de matrícula por licencia de maternidad durante el periodo académico.', anexos:['Solicitud firmada.pdf','Certificado médico.pdf'],
@@ -1413,7 +1413,19 @@ function abrirDetallePagina(rad, origen){
     dAnexosCard.hidden = true;
   } else {
     document.getElementById('dJustTitulo').textContent = 'Justificación del Estudiante';
-    document.getElementById('dJust').textContent = r.just;
+    if(esES && r.causa === 'cruce' && r.cruce){
+      document.getElementById('dJust').innerHTML = `
+        <div class="just-text">${r.just}</div>
+        <div class="modal-sub">Causa: cruce con otra evaluación</div>
+        <div class="field-grid">
+          <div class="field"><label>Asignatura en cruce</label><div class="value">${r.cruce.asignatura || '—'}</div></div>
+          <div class="field"><label>Código</label><div class="value">${r.cruce.codigo || '—'}</div></div>
+          <div class="field"><label>Fecha</label><div class="value">${fmtFechaSolo(r.cruce.fecha) || '—'}</div></div>
+          <div class="field"><label>Hora</label><div class="value">${r.cruce.hora || '—'}</div></div>
+        </div>`;
+    } else {
+      document.getElementById('dJust').textContent = r.just;
+    }
     dAnexosCard.hidden = false;
     document.getElementById('dAnexosCount').textContent = (r.anexos || []).length;
     document.getElementById('dAnexos').innerHTML = anexosHTML(r.anexos);
@@ -1541,8 +1553,7 @@ function renderProcesoExtra(r){
       </dl>`;
   }
   if(r.proc === PROC.ES){
-    const esCruce = r.causa === 'cruce';
-    let html = `
+    return `
       <div class="field-grid">
         <div class="field"><label>Asignatura</label><div class="value">${r.examen || '—'}</div></div>
         <div class="field"><label>Código de la asignatura</label><div class="value">${r.codExamen || '—'}</div></div>
@@ -1550,21 +1561,7 @@ function renderProcesoExtra(r){
         <div class="field"><label>Fecha del examen no presentado</label><div class="value">${fmtFechaSolo(r.fechaExamen) || '—'}</div></div>
         <div class="field"><label>Fecha acordada para el examen</label><div class="value">${fmtFechaSolo(r.propuesta) || '—'}</div></div>
         <div class="field"><label>Teléfono de contacto</label><div class="value">${r.telefono || '—'}</div></div>
-        <div class="field"><label>Firma del docente que orienta la asignatura</label><div class="value">${r.firmaDocente || '—'}</div></div>
-        <div class="field"><label>Tipo de causa</label><div class="value">${esCruce ? 'Cruce con otra evaluación' : 'Otra causa'}</div></div>
       </div>`;
-    if(esCruce && r.cruce){
-      html += `
-      <div class="modal-sub">Datos del cruce</div>
-      <div class="field-grid">
-        <div class="field"><label>Asignatura en cruce</label><div class="value">${r.cruce.asignatura || '—'}</div></div>
-        <div class="field"><label>Código</label><div class="value">${r.cruce.codigo || '—'}</div></div>
-        <div class="field"><label>Fecha</label><div class="value">${fmtFechaSolo(r.cruce.fecha) || '—'}</div></div>
-        <div class="field"><label>Hora</label><div class="value">${r.cruce.hora || '—'}</div></div>
-        <div class="field"><label>Firma del docente</label><div class="value">${r.cruce.firmaDocente || '—'}</div></div>
-      </div>`;
-    }
-    return html;
   }
   return '';
 }
