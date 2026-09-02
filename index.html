@@ -1285,9 +1285,11 @@ function abrirDetallePagina(rad, origen){
   const esES = r.proc === PROC.ES;
 
   const esCM = r.proc === PROC.CM;
+  const esCA = r.proc === PROC.CA;
+  const plantillaSimple = esCM || esCA;
 
   document.getElementById('dTitulo').textContent = 'Solicitud de ' + r.proc;
-  document.getElementById('dMeta').innerHTML = esCM
+  document.getElementById('dMeta').innerHTML = plantillaSimple
     ? `<span>Radicado <b>${r.rad}</b></span>`
     : `
     <span><b>${r.est}</b></span>
@@ -1302,7 +1304,7 @@ function abrirDetallePagina(rad, origen){
 
   document.getElementById('dTimeline').innerHTML = timelineHTML(r);
 
-  if(esCM){
+  if(plantillaSimple){
     document.getElementById('dGeneral').innerHTML = `
       <div class="field"><label>Nombre del estudiante</label><div class="value">${r.est}</div></div>
       <div class="field"><label>Número de CC</label><div class="value">${r.doc}</div></div>
@@ -1321,7 +1323,7 @@ function abrirDetallePagina(rad, origen){
   }
 
   const dAnexosCard = document.getElementById('dAnexosCard');
-  if(esCM){
+  if(plantillaSimple){
     document.getElementById('dJustTitulo').textContent = 'Motivo de cancelación';
     const soporte = (r.anexos && r.anexos.length)
       ? `<div class="modal-sub">Soporte adjunto</div><ul class="anexos">${anexosHTML(r.anexos)}</ul>`
@@ -1337,8 +1339,8 @@ function abrirDetallePagina(rad, origen){
   }
 
   const dPazCard = document.getElementById('dPazCard');
-  if(esCM){
-    document.getElementById('dProcesoTitulo').textContent = 'Asignaturas matriculadas';
+  if(plantillaSimple){
+    document.getElementById('dProcesoTitulo').textContent = esCM ? 'Asignaturas matriculadas' : 'Asignaturas a cancelar';
     const filasAsig = (r.asignaturas || []).map(a => `<tr><td>${a.cod}</td><td>${a.nombre}</td></tr>`).join('');
     document.getElementById('dProcesoCard').hidden = false;
     document.getElementById('dProcesoExtra').innerHTML = `
@@ -1347,8 +1349,12 @@ function abrirDetallePagina(rad, origen){
         <tbody>${filasAsig}</tbody>
       </table>`;
 
-    dPazCard.hidden = false;
-    document.getElementById('dPazSalvos').innerHTML = `<ul class="anexos">${documentosHTML(r.pazYSalvos)}</ul>`;
+    if(esCM){
+      dPazCard.hidden = false;
+      document.getElementById('dPazSalvos').innerHTML = `<ul class="anexos">${documentosHTML(r.pazYSalvos)}</ul>`;
+    } else {
+      dPazCard.hidden = true;
+    }
   } else {
     document.getElementById('dProcesoTitulo').textContent = 'Datos del proceso';
     const extra = renderProcesoExtra(r);
