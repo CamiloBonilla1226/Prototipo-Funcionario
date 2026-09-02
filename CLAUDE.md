@@ -60,19 +60,37 @@ de los que se deriva la etiqueta visible.
 | Estado | Significado | Acción esperada del Funcionario |
 |---|---|---|
 | Pendiente | La solicitud acaba de llegar del Estudiante | Revisar y remitir al Decano, o rechazar |
-| En Gestión | No es su turno | Ninguna; solo seguimiento |
-| Pendiente de Respuesta | El Decano ya decidió y devolvió el trámite | Enviar la respuesta al Estudiante |
-| Pendiente de Verificación | El Estudiante subió el comprobante de pago | Verificar el comprobante y cerrar |
+| En Gestión | No es su turno (espera del Decano o, en Examen Supletorio, espera de que el Estudiante pague) | Ninguna; solo seguimiento |
+| Pendiente Notificar | El Decano ya decidió y devolvió el trámite | Enviar la respuesta al Estudiante (cierra como `Respondida`) |
+| Enviar Recibo | *(solo Examen Supletorio)* El Decano aprobó | Enviar el recibo de pago al Estudiante (pasa a `En Gestión`, `esperaDe: 'Estudiante'`, a la espera del pago) |
+| Recibo Pagado | *(solo Examen Supletorio)* El Estudiante subió el comprobante de pago | Verificar el comprobante: aprobar (notifica y cierra) o rechazar (exige motivo y cierra) |
 | Respondida | Trámite cerrado | Ninguna; solo consulta |
 
 - Cancelación de Matrícula y Cancelación de Asignatura: `Pendiente`,
-  `En Gestión`, `Pendiente de Respuesta`, `Respondida`.
-- Examen Supletorio: los cuatro anteriores + `Pendiente de Verificación`.
-- `Pendiente de Verificación` **no existe** para los procesos de
+  `En Gestión`, `Pendiente Notificar`, `Respondida`. Nunca pasan por
+  `Enviar Recibo` ni `Recibo Pagado`.
+- Examen Supletorio: `Pendiente`, `En Gestión`, `Respondida`, y en vez de un
+  único `Pendiente Notificar` genérico se bifurca según la decisión del
+  Decano: si **rechaza**, usa `Pendiente Notificar` igual que Cancelación;
+  si **aprueba**, usa `Enviar Recibo` y luego `Recibo Pagado` (nunca cierra
+  directamente a `Respondida` desde `Pendiente Notificar`).
+- `Enviar Recibo` y `Recibo Pagado` **no existen** para los procesos de
   cancelación — el filtro por estado debe reflejar esta dependencia.
 - `En Gestión` agrupa deliberadamente dos situaciones (espera del Decano y
-  espera del Estudiante); no la desambigües en la tabla, solo en el detalle
+  espera del Estudiante, esta última solo tras "Enviar Recibo" en Examen
+  Supletorio); no la desambigües en la tabla, solo en el detalle
   (campo `esperaDe`).
+- Al rechazar en el paso `Pendiente Notificar`, la observación se
+  precarga con un texto predeterminado editable ("La solicitud no cumple
+  con los requisitos establecidos."), igual que en el rechazo inicial del
+  Funcionario.
+- El paso `Enviar Recibo` exige adjuntar el recibo de pago en **PDF**
+  (campo obligatorio, bloquea el envío si falta el archivo — mismo criterio
+  de la sección 9). El nombre del archivo se guarda en `r.recibo` y se
+  muestra en el detalle de la solicitud junto al comprobante que luego
+  suba el Estudiante. Este recibo **no es la Resolución** (sección 2): es
+  un documento distinto, propio del cobro del examen supletorio, y sí está
+  permitido adjuntarlo/descargarlo digitalmente.
 
 ## 4. Menú (exactamente tres ítems, no agregar más)
 1. **Mi Usuario**
@@ -88,14 +106,15 @@ de los que se deriva la etiqueta visible.
   Nombre del Estudiante, Número de documento, Tipo de proceso, Fecha de
   radicación, Estado (chip de color), Acciones.
 - Filtros: Tipo de proceso (solo los asignados al Funcionario + "Todos"),
-  Estado (nunca ofrece `Respondida`; no ofrece `Pendiente de Verificación`
-  si el Funcionario no tiene asignado Examen Supletorio), Número de
-  documento (búsqueda). Botón de limpiar filtros. Estado vacío con mensaje
-  informativo, nunca como error.
+  Estado (nunca ofrece `Respondida`; no ofrece `Enviar Recibo` ni
+  `Recibo Pagado` si el Funcionario no tiene asignado Examen Supletorio),
+  Número de documento (búsqueda). Botón de limpiar filtros. Estado vacío
+  con mensaje informativo, nunca como error.
 - Acciones por estado: `Pendiente` → Ver detalle · Remitir al Decano ·
   Rechazar. `En Gestión` → solo Ver detalle (ninguna acción de gestión
-  habilitada). `Pendiente de Respuesta` → Ver detalle · Enviar respuesta.
-  `Pendiente de Verificación` → Ver detalle · Verificar comprobante.
+  habilitada). `Pendiente Notificar` → Ver detalle · Enviar respuesta.
+  `Enviar Recibo` → Ver detalle · Enviar recibo al Estudiante.
+  `Recibo Pagado` → Ver detalle · Aprobar comprobante · Rechazar comprobante.
 
 ### 5.1. "Ver detalle" — regla obligatoria transversal (Solicitudes y Respuestas)
 
