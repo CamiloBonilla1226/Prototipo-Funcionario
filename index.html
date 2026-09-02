@@ -120,6 +120,7 @@
   }
   .card-head h2{margin:0;font-size:15px;font-weight:700;color:var(--navy-ink);}
   .card-body{padding:16px 18px 0;}
+  .acciones-card-body{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding-bottom:18px;}
 
   /* ---------- Filters ---------- */
   .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding-bottom:16px;}
@@ -815,6 +816,10 @@
               <div class="card-body" id="dComprobante"></div>
             </div>
 
+            <div class="card acciones-card" id="dAccionesCard" hidden>
+              <div class="card-body acciones-card-body" id="dAccionesFinales"></div>
+            </div>
+
           </div>
 
           <div class="sidebar" id="dSidebar"></div>
@@ -1289,7 +1294,9 @@ function abrirDetallePagina(rad, origen){
     <span>Radicada el ${fmtFecha(r.fecha)}</span>`;
 
   const chip = `<span class="estado-chip-lg ${estadoChipClass(r.estado)}">${iconEstado(r.estado)}${r.estado}</span>`;
-  document.getElementById('dAcciones').innerHTML = chip + renderAccionesDetalle(r, origen);
+  document.getElementById('dAcciones').innerHTML = chip;
+
+  const accionesFinales = renderAccionesDetalle(r, origen);
 
   document.getElementById('dTimeline').innerHTML = timelineHTML(r);
 
@@ -1401,6 +1408,10 @@ function abrirDetallePagina(rad, origen){
         </div>`;
     }
   }
+
+  document.getElementById('dAccionesCard').hidden = !accionesFinales;
+  document.getElementById('dAccionesFinales').innerHTML = accionesFinales;
+
   document.getElementById('dSidebar').innerHTML = sidebarHTML;
 
   irADetalle();
@@ -1512,7 +1523,7 @@ document.getElementById('pager').addEventListener('click', e => {
 });
 
 document.getElementById('dVolver').addEventListener('click', volverDeDetalle);
-document.getElementById('dAcciones').addEventListener('click', e => {
+document.getElementById('view-detalle').addEventListener('click', e => {
   const bRechazar = e.target.closest('[data-accion="rechazar"]');
   const bRemitir  = e.target.closest('[data-accion="remitir"]');
   const bResponder = e.target.closest('[data-accion="responder"]');
