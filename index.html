@@ -245,25 +245,32 @@
   .modal{
     background:#fff;border-radius:4px;width:100%;max-width:660px;
     box-shadow:0 14px 44px rgba(20,26,56,.28);
+    display:flex;flex-direction:column;max-height:calc(100vh - 80px);
   }
+  #backdrop .modal{max-width:780px;}
   .modal-head{
     background:var(--navy-700);color:#fff;padding:14px 18px;
     display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;
+    flex:0 0 auto;
   }
   .modal-head h3{margin:0;font-size:14.5px;font-weight:700;}
   .modal-close{background:none;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:0 4px;}
   .modal-close:focus-visible{outline:2px solid #fff;outline-offset:2px;}
-  .modal-body{padding:18px;}
-  .dl{display:grid;grid-template-columns:170px 1fr;gap:9px 14px;font-size:13px;}
+  .modal-body{padding:18px;flex:1 1 auto;overflow-y:auto;}
+  .dl{display:grid;grid-template-columns:190px 1fr;gap:13px 16px;font-size:13.5px;}
   .dl dt{color:var(--muted);font-weight:600;}
   .dl dd{margin:0;color:var(--text);}
+  .dl dt:has(+ dd > .plain-list){grid-column:1/-1;}
+  .dl dd:has(> .plain-list){grid-column:1/-1;margin-top:2px;}
   .plain-list{margin:0;padding-left:18px;}
   .plain-list li{margin-bottom:3px;}
   .plain-list:empty::before{content:'—';color:var(--muted);}
   .modal-sub{
-    margin:20px 0 9px;font-size:12px;font-weight:700;color:var(--navy-ink);
+    margin:28px 0 10px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:12px;font-weight:700;color:var(--navy-ink);
     text-transform:uppercase;letter-spacing:.5px;
   }
+  .modal-sub:first-child{margin-top:0;padding-top:0;border-top:0;}
   .just{
     background:var(--panel);border-left:3px solid var(--navy-700);padding:11px 13px;
     font-size:13px;line-height:1.6;border-radius:0 3px 3px 0;
@@ -281,7 +288,7 @@
   .link-btn:hover{text-decoration:underline;}
   .modal-foot{
     padding:14px 18px;border-top:1px solid var(--line-soft);display:flex;
-    justify-content:flex-end;gap:10px;flex-wrap:wrap;
+    justify-content:flex-end;gap:10px;flex-wrap:wrap;flex:0 0 auto;
   }
   .btn{height:36px;padding:0 16px;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;}
   .btn-ghost{background:var(--panel);border-color:#B7BCC6;color:var(--navy-ink);}
