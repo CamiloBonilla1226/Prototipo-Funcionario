@@ -1498,6 +1498,7 @@ const VIEWS = {usuario:'Mi usuario', solicitudes:'Solicitudes', respuestas:'Resp
 function irA(v){
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('is-active', b.dataset.view === v));
   Object.keys(VIEWS).forEach(k => document.getElementById('view-'+k).hidden = (k !== v));
+  document.getElementById('view-detalle').hidden = true;
   document.getElementById('crumbView').textContent = VIEWS[v];
   document.getElementById('sectionTab').textContent = VIEWS[v];
 }
