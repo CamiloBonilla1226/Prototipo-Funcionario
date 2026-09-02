@@ -297,6 +297,128 @@
     border:1px solid #F0DEB4;border-radius:3px;padding:9px 11px;line-height:1.55;
   }
 
+  /* ---------- Vista Detalle (página completa) ---------- */
+  .back-btn{
+    display:inline-flex;align-items:center;gap:7px;background:none;border:0;cursor:pointer;
+    color:var(--navy-ink);font-size:13px;font-weight:600;padding:6px 8px;border-radius:4px;
+    margin-bottom:14px;
+  }
+  .back-btn:hover{background:var(--panel);}
+  .back-btn:focus-visible{outline:2px solid #B9C7EE;outline-offset:1px;}
+
+  .page-header{
+    max-width:1020px;margin:0 auto 20px;display:flex;justify-content:space-between;
+    align-items:flex-start;gap:20px;flex-wrap:wrap;
+  }
+  .ph-left h1{margin:0 0 6px;font-size:19px;font-weight:700;color:var(--navy-ink);}
+  .ph-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);}
+  .ph-meta b{color:var(--text);font-weight:600;}
+  .ph-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+  .estado-chip-lg{
+    display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;
+    font-size:12.5px;font-weight:700;white-space:nowrap;
+  }
+  .estado-chip-lg.st-pendiente,.estado-chip-lg.st-verificacion{background:#FDF1E2;color:#8A5A15;}
+  .estado-chip-lg.st-gestion{background:#E7EBFB;color:var(--navy-700);}
+  .estado-chip-lg.st-respuesta{background:#E7EBFB;color:var(--navy-700);}
+  .estado-chip-lg.st-respondida{background:#E5F5EE;color:var(--green);}
+
+  .timeline-wrap{max-width:1020px;margin:0 auto 18px;}
+
+  .timeline{
+    list-style:none;margin:0;padding:6px 4px 0;display:flex;align-items:flex-start;
+  }
+  .timeline li{position:relative;flex:1;text-align:center;padding-top:34px;min-width:0;}
+  .timeline li::after{
+    content:'';position:absolute;top:13px;left:50%;width:100%;height:2px;
+    background:var(--line);z-index:0;
+  }
+  .timeline li:last-child::after{display:none;}
+  .timeline li.done::after{background:var(--green);}
+  .timeline li::before{
+    content:'';position:absolute;top:2px;left:50%;transform:translateX(-50%);
+    width:26px;height:26px;border-radius:50%;background:#fff;
+    border:2.5px solid var(--muted);z-index:1;
+  }
+  .timeline li.done::before{
+    border-color:var(--green);background:var(--green);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l4.5 4.5L20 6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:center;background-size:13px;
+  }
+  .timeline li.current::before{
+    border-color:var(--navy-700);background:var(--navy-700);
+    box-shadow:0 0 0 4px rgba(42,58,134,.14);
+  }
+  .timeline li.rechazada::before{
+    border-color:var(--red);background:var(--red);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:center;background-size:12px;
+  }
+  .timeline li.rechazada::after{background:var(--red);}
+  .tl-title{font-size:12.5px;font-weight:700;color:var(--navy-ink);margin:0 6px 3px;line-height:1.35;}
+  .tl-meta{font-size:11.5px;color:var(--muted);}
+  .timeline li:not(.done):not(.current):not(.rechazada) .tl-title{color:var(--muted);font-weight:600;}
+
+  .layout-detalle .card-body{padding-bottom:18px;}
+  .timeline-wrap .card-body{padding-bottom:16px;}
+  .layout-detalle{
+    max-width:1020px;margin:0 auto;display:grid;grid-template-columns:1fr 300px;
+    gap:20px;align-items:start;
+  }
+  .layout-detalle .card{margin:0 0 18px;max-width:none;}
+
+  .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 20px;}
+  .field-grid .field .value{font-size:13.5px;color:var(--text);font-weight:600;}
+  .card-head .count{
+    margin-left:auto;font-size:12px;font-weight:600;color:var(--muted);
+    background:var(--panel);padding:3px 9px;border-radius:10px;
+  }
+
+  .subsection{margin-bottom:20px;}
+  .subsection:last-child{margin-bottom:0;}
+  .subsection-title{
+    font-size:12px;font-weight:700;color:var(--navy-700);margin:0 0 10px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .subsection-title::after{content:'';flex:1;height:1px;background:var(--line);}
+
+  .mini-fields{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:12px 20px;
+    background:var(--panel);border-radius:5px;padding:13px 15px;
+  }
+  .mini-fields .field label{color:var(--muted);}
+
+  .mini-table{width:100%;border-collapse:collapse;font-size:12.8px;}
+  .mini-table th{
+    text-align:left;padding:8px 10px;background:var(--panel);color:var(--muted);
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+    border-bottom:1px solid var(--line);
+  }
+  .mini-table td{padding:10px;border-bottom:1px solid var(--line-soft);}
+  .mini-table tr:last-child td{border-bottom:0;}
+  .mini-table .muted{color:var(--muted);}
+
+  .resolucion-note{
+    background:#FFF8E9;border:1px solid #F0DEB4;border-radius:5px;
+    padding:13px 14px;font-size:12.5px;line-height:1.6;color:#6B551F;
+  }
+  .sidebar .card-body{padding:16px 18px;}
+  .comprobante-destacado{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--panel);border-radius:5px;padding:12px 14px;
+  }
+  .comprobante-destacado small{display:block;color:var(--muted);font-weight:400;}
+
+  @media (max-width:880px){
+    .layout-detalle{grid-template-columns:1fr;}
+    .field-grid,.mini-fields{grid-template-columns:1fr;}
+  }
+  @media (max-width:700px){
+    .timeline{overflow-x:auto;padding-bottom:6px;}
+    .timeline li{min-width:110px;}
+  }
+
   /* ---------- Diálogo de acción (Rechazar / Remitir al Decano) ---------- */
   .modal-accion .modal-head{background:#1B2660;}
   .modal-accion .btn-primary{background:#1B2660;}
@@ -623,6 +745,70 @@
           <div class="pager" id="pagerR"></div>
         </div>
       </section>
+
+      <!-- ---------- VISTA: DETALLE DE SOLICITUD (página completa) ---------- -->
+      <section id="view-detalle" hidden>
+        <button class="back-btn" id="dVolver" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Volver
+        </button>
+
+        <div class="page-header">
+          <div class="ph-left">
+            <h1 id="dTitulo">Solicitud</h1>
+            <div class="ph-meta" id="dMeta"></div>
+          </div>
+          <div class="ph-right" id="dAcciones"></div>
+        </div>
+
+        <div class="timeline-wrap">
+          <div class="card">
+            <div class="card-head"><h2>Línea de tiempo del trámite</h2></div>
+            <div class="card-body">
+              <ul class="timeline" id="dTimeline"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="layout-detalle">
+          <div class="main">
+
+            <div class="card">
+              <div class="card-head"><h2>Datos generales</h2></div>
+              <div class="card-body">
+                <div class="field-grid" id="dGeneral"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h2>Justificación del Estudiante</h2></div>
+              <div class="card-body">
+                <div class="just" id="dJust"></div>
+              </div>
+            </div>
+
+            <div class="card" id="dProcesoCard" hidden>
+              <div class="card-head"><h2>Datos del proceso</h2></div>
+              <div class="card-body" id="dProcesoExtra"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><h2>Anexos adjuntos</h2><span class="count" id="dAnexosCount"></span></div>
+              <div class="card-body">
+                <ul class="anexos" id="dAnexos"></ul>
+              </div>
+            </div>
+
+            <div class="card" id="dComprobanteCard" hidden>
+              <div class="card-head"><h2>Comprobante de pago</h2></div>
+              <div class="card-body" id="dComprobante"></div>
+            </div>
+
+          </div>
+
+          <div class="sidebar" id="dSidebar"></div>
+        </div>
+      </section>
     </div>
 
     <footer>
@@ -633,39 +819,6 @@
 </div>
 
 <!-- ===================== MODAL DETALLE ===================== -->
-<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="mTitle">Detalle de la solicitud</h3>
-      <button class="modal-close" id="mClose" aria-label="Cerrar">&times;</button>
-    </div>
-    <div class="modal-body">
-      <dl class="dl">
-        <dt>Número de radicado</dt><dd id="mRad"></dd>
-        <dt>Tipo de proceso académico</dt><dd id="mProc"></dd>
-        <dt>Estudiante</dt><dd id="mEst"></dd>
-        <dt>Documento</dt><dd id="mDoc"></dd>
-        <dt>Programa</dt><dd id="mProg"></dd>
-        <dt>Fecha de radicación</dt><dd id="mFec"></dd>
-        <dt>Estado actual</dt><dd id="mEstado"></dd>
-      </dl>
-
-      <div class="modal-sub">Justificación de la solicitud</div>
-      <div class="just" id="mJust"></div>
-
-      <div id="mProcesoExtra"></div>
-
-      <div class="modal-sub">Anexos adjuntos</div>
-      <ul class="anexos" id="mAnexos"></ul>
-
-      <div id="mRespuestaExtra"></div>
-
-      <p class="note" id="mNote"></p>
-    </div>
-    <div class="modal-foot" id="mFoot"></div>
-  </div>
-</div>
-
 <!-- ===================== MODAL RECHAZAR / REMITIR AL DECANO ===================== -->
 <div class="backdrop" id="backdropAccion" role="dialog" aria-modal="true" aria-labelledby="aTitle">
   <div class="modal modal-accion">
@@ -989,23 +1142,229 @@ document.querySelectorAll('#view-respuestas th.sortable').forEach(th => th.addEv
 
 document.getElementById('tbodyR').addEventListener('click', e => {
   const b = e.target.closest('.btn-eye');
-  if(b) abrirDetalleRespuesta(b.dataset.rad);
-});
-document.getElementById('mRespuestaExtra').addEventListener('click', e => {
-  if(e.target.closest('[data-descargar-resolucion]')){
-    mostrarToast('<b>Descarga simulada.</b><br>En la versión final, la resolución se guardará en las carpetas de <b>DARCA</b> y <b>DECANATURA</b>.');
-  }
+  if(b) abrirDetallePagina(b.dataset.rad, 'respuestas');
 });
 document.getElementById('pagerR').addEventListener('click', e => {
   const b = e.target.closest('button[data-go]');
   if(b && !b.disabled){ pageR = Number(b.dataset.go); renderRespuestas(); window.scrollTo({top:0,behavior:'smooth'}); }
 });
 
-/* ---------- Modal detalle (HU-02 Funcionario) ---------- */
-const backdrop = document.getElementById('backdrop');
-let lastFocus = null;
+/* ---------- Detalle de solicitud (página completa) ---------- */
+let detalleOrigen = 'solicitudes';
 
-/* ---------- Campos estructurados propios del tipo de proceso ---------- */
+function estadoChipClass(estado){
+  const map = {
+    'Pendiente':'st-pendiente',
+    'En Gestión':'st-gestion',
+    'Pendiente de Respuesta':'st-respuesta',
+    'Pendiente de Verificación':'st-verificacion',
+    'Respondida':'st-respondida'
+  };
+  return map[estado] || '';
+}
+
+/* Construye los pasos de la línea de tiempo según el estado real del registro.
+   No asume un único camino fijo: si fue rechazada por el Funcionario antes de
+   llegar al Decano, el paso "Decisión del Decano" ni siquiera se muestra. */
+function pasosTimeline(r){
+  const esES = r.proc === PROC.ES;
+  const pasos = [{title:'Solicitud radicada', meta:fmtFecha(r.fecha), cls:'done'}];
+
+  if(r.estado === 'Pendiente'){
+    pasos.push({title:'Revisión del Funcionario Académico', meta:'En curso', cls:'current'});
+    pasos.push({title:'Decisión del Decano', meta:'Pendiente', cls:''});
+    pasos.push({title:'Notificación al Estudiante', meta:'Pendiente', cls:''});
+    if(esES) pasos.push({title:'Verificación de pago', meta:'Pendiente', cls:''});
+    return pasos;
+  }
+
+  const rechazadaEnFuncionario = r.estado === 'Respondida' && r.decision === 'Rechazada' && !r.decisionDecano;
+  if(rechazadaEnFuncionario){
+    pasos.push({title:'Revisión del Funcionario Académico', meta:'Rechazada', cls:'rechazada'});
+    pasos.push({title:'Notificación al Estudiante', meta:'Completada', cls:'done'});
+    return pasos;
+  }
+
+  pasos.push({title:'Revisión del Funcionario Académico', meta:'Completada', cls:'done'});
+
+  if(r.estado === 'En Gestión'){
+    pasos.push({title:'Decisión del Decano', meta:'En curso', cls:'current'});
+    pasos.push({title:'Notificación al Estudiante', meta:'Pendiente', cls:''});
+    if(esES) pasos.push({title:'Verificación de pago', meta:'Pendiente', cls:''});
+    return pasos;
+  }
+
+  if(r.estado === 'Pendiente de Respuesta'){
+    const rechazoDecano = r.decisionDecano === 'Rechazada';
+    pasos.push({title:'Decisión del Decano', meta:r.decisionDecano || '', cls:rechazoDecano ? 'rechazada' : 'done'});
+    pasos.push({title:'Notificación al Estudiante', meta:'En curso', cls:'current'});
+    if(esES) pasos.push({title:'Verificación de pago', meta:'Pendiente', cls:''});
+    return pasos;
+  }
+
+  if(r.estado === 'Pendiente de Verificación'){
+    pasos.push({title:'Decisión del Decano', meta:'Aprobada', cls:'done'});
+    pasos.push({title:'Notificación al Estudiante', meta:'Completada', cls:'done'});
+    pasos.push({title:'Verificación de pago', meta:'En curso', cls:'current'});
+    return pasos;
+  }
+
+  /* Respondida, habiendo pasado por el Decano */
+  const rechazoDecano = r.decision === 'Rechazada';
+  pasos.push({title:'Decisión del Decano', meta:r.decision, cls:rechazoDecano ? 'rechazada' : 'done'});
+  pasos.push({title:'Notificación al Estudiante', meta:'Completada', cls:'done'});
+  if(esES && !rechazoDecano) pasos.push({title:'Verificación de pago', meta:'Completada', cls:'done'});
+  return pasos;
+}
+function timelineHTML(r){
+  return pasosTimeline(r).map(p => `<li class="${p.cls}"><div class="tl-title">${p.title}</div><div class="tl-meta">${p.meta}</div></li>`).join('');
+}
+
+function renderAccionesDetalle(r, origen){
+  if(origen === 'respuestas') return '';
+  const acciones = {
+    'Pendiente': `<button class="btn btn-danger" data-accion="rechazar" data-rad="${r.rad}">Rechazar</button>
+       <button class="btn btn-primary" data-accion="remitir" data-rad="${r.rad}">Remitir al Decano</button>`,
+    'Pendiente de Respuesta': `<button class="btn btn-primary" data-accion="responder" data-rad="${r.rad}">Enviar respuesta al Estudiante</button>`,
+    'Pendiente de Verificación': `<button class="btn btn-danger" data-accion="rechazarComprobante" data-rad="${r.rad}">Rechazar comprobante</button>
+       <button class="btn btn-primary" data-accion="aprobarComprobante" data-rad="${r.rad}">Aprobar comprobante</button>`
+  };
+  return acciones[r.estado] || '';
+}
+
+function anexosHTML(lista){
+  return (lista || []).map(a => `
+    <li>
+      <span class="anexo-name">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+        <span>${a}</span>
+      </span>
+      <span class="anexo-actions">
+        <button class="link-btn">Visualizar</button>
+        <button class="link-btn">Descargar</button>
+      </span>
+    </li>`).join('');
+}
+
+function abrirDetallePagina(rad, origen){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  detalleOrigen = origen;
+  const esES = r.proc === PROC.ES;
+
+  document.getElementById('dTitulo').textContent = 'Solicitud de ' + r.proc;
+  document.getElementById('dMeta').innerHTML = `
+    <span><b>${r.est}</b></span>
+    <span>Doc. ${r.doc}</span>
+    <span>${r.prog}</span>
+    <span>Radicada el ${fmtFecha(r.fecha)}</span>`;
+
+  const chip = `<span class="estado-chip-lg ${estadoChipClass(r.estado)}">${iconEstado(r.estado)}${r.estado}</span>`;
+  document.getElementById('dAcciones').innerHTML = chip + renderAccionesDetalle(r, origen);
+
+  document.getElementById('dTimeline').innerHTML = timelineHTML(r);
+
+  document.getElementById('dGeneral').innerHTML = `
+    <div class="field"><label>Número de radicado</label><div class="value">${r.rad}</div></div>
+    <div class="field"><label>Tipo de proceso</label><div class="value">${r.proc}</div></div>
+    <div class="field"><label>Programa</label><div class="value">${r.prog}</div></div>
+    <div class="field"><label>Estudiante</label><div class="value">${r.est}</div></div>
+    <div class="field"><label>Número de documento</label><div class="value">${r.doc}</div></div>
+    <div class="field"><label>Fecha de radicación</label><div class="value">${fmtFecha(r.fecha)}</div></div>`;
+
+  document.getElementById('dJust').textContent = r.just;
+
+  const extra = renderProcesoExtra(r);
+  document.getElementById('dProcesoCard').hidden = !extra;
+  document.getElementById('dProcesoExtra').innerHTML = extra;
+
+  document.getElementById('dAnexosCount').textContent = (r.anexos || []).length;
+  document.getElementById('dAnexos').innerHTML = anexosHTML(r.anexos);
+
+  const comprobanteCard = document.getElementById('dComprobanteCard');
+  if(r.estado === 'Pendiente de Verificación' && r.comprobante){
+    comprobanteCard.hidden = false;
+    document.getElementById('dComprobante').innerHTML = `
+      <div class="comprobante-destacado">
+        <span class="anexo-name">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+          <span>${r.comprobante}<small>Subido por el Estudiante</small></span>
+        </span>
+        <span class="anexo-actions">
+          <button class="link-btn" type="button">Visualizar</button>
+          <button class="link-btn" type="button">Descargar</button>
+        </span>
+      </div>`;
+  } else {
+    comprobanteCard.hidden = true;
+    document.getElementById('dComprobante').innerHTML = '';
+  }
+
+  /* ---- Sidebar ---- */
+  let sidebarHTML = '';
+  if(origen === 'respuestas'){
+    const aprobada = r.decision === 'Aprobada';
+    sidebarHTML += `
+      <div class="card">
+        <div class="card-head"><h2>Decisión</h2></div>
+        <div class="card-body"><span class="chip-decision ${aprobada ? 'is-aprobada' : 'is-rechazada'}">${r.decision}</span></div>
+      </div>`;
+    if(aprobada){
+      const notaResolucion = (!esES && r.resolucion)
+        ? `La solicitud fue aprobada mediante la Resolución No. ${String(r.resolucion).replace(/^Resoluci[oó]n\s*/i,'').replace(/\.pdf$/i,'')}. Por reglamento, este documento no se firma ni se entrega de forma digital: el original quedó firmado físicamente por el Decano y entregado al Estudiante; las copias quedaron archivadas en Decanatura y en DARCA.`
+        : `Este proceso no genera Resolución. La decisión se comunicó directamente al Estudiante.`;
+      sidebarHTML += `
+        <div class="card">
+          <div class="card-head"><h2>Resolución</h2></div>
+          <div class="card-body"><div class="resolucion-note">${notaResolucion}</div></div>
+        </div>`;
+    } else {
+      sidebarHTML += `
+        <div class="card">
+          <div class="card-head"><h2>Motivo del rechazo</h2></div>
+          <div class="card-body"><div class="just">${r.observacion || 'No se registró una observación.'}</div></div>
+        </div>`;
+    }
+  } else {
+    const nota = esES
+      ? 'Este proceso no genera Resolución. La decisión del Decano se comunicará directamente al Estudiante.'
+      : 'La Resolución no existe todavía en este punto del trámite: se redacta e imprime únicamente después de que el Decano decida, y debe ser firmada físicamente por él.';
+    sidebarHTML += `
+      <div class="card">
+        <div class="card-head"><h2>Nota sobre la Resolución</h2></div>
+        <div class="card-body"><div class="resolucion-note">${nota}</div></div>
+      </div>`;
+    if(r.observacionesRemision){
+      sidebarHTML += `
+        <div class="card">
+          <div class="card-head"><h2>Tus observaciones para el Decano</h2></div>
+          <div class="card-body"><div class="just">${r.observacionesRemision}</div></div>
+        </div>`;
+    }
+  }
+  document.getElementById('dSidebar').innerHTML = sidebarHTML;
+
+  irADetalle();
+}
+
+function irADetalle(){
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('is-active'));
+  Object.keys(VIEWS).forEach(k => document.getElementById('view-'+k).hidden = true);
+  document.getElementById('view-detalle').hidden = false;
+  document.getElementById('crumbView').textContent = VIEWS[detalleOrigen];
+  document.getElementById('sectionTab').textContent = 'Detalle de la solicitud';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function volverDeDetalle(){
+  document.getElementById('view-detalle').hidden = true;
+  irA(detalleOrigen);
+}
+function volverSiEnDetalle(){
+  if(!document.getElementById('view-detalle').hidden) volverDeDetalle();
+}
+
+
 function renderProcesoExtra(r){
   if(r.proc === PROC.CM){
     const asignaturas = (r.asignaturas || []).map(a => `<li>${a.cod} — ${a.nombre}</li>`).join('');
@@ -1055,146 +1414,6 @@ function renderProcesoExtra(r){
   return '';
 }
 
-function abrirDetalle(rad){
-  const r = DATA.find(x => x.rad === rad);
-  if(!r) return;
-  lastFocus = document.activeElement;
-  document.getElementById('mTitle').textContent = 'Detalle de la solicitud';
-  document.getElementById('mRespuestaExtra').innerHTML = '';
-  document.getElementById('mRad').textContent = r.rad;
-  document.getElementById('mProc').textContent = r.proc;
-  document.getElementById('mEst').textContent = r.est;
-  document.getElementById('mDoc').textContent = r.doc;
-  document.getElementById('mProg').textContent = r.prog;
-  document.getElementById('mFec').textContent = fmtFecha(r.fecha);
-  document.getElementById('mEstado').innerHTML = `<span class="estado">${iconEstado(r.estado)}${r.estado}</span>`;
-  document.getElementById('mJust').textContent = r.just;
-  document.getElementById('mProcesoExtra').innerHTML = renderProcesoExtra(r);
-
-  document.getElementById('mAnexos').innerHTML = r.anexos.map(a => `
-    <li>
-      <span class="anexo-name">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
-        <span>${a}</span>
-      </span>
-      <span class="anexo-actions">
-        <button class="link-btn">Visualizar</button>
-        <button class="link-btn">Descargar</button>
-      </span>
-    </li>`).join('');
-
-  if(r.estado === 'Pendiente de Verificación' && r.comprobante){
-    document.getElementById('mRespuestaExtra').innerHTML = `
-      <div class="modal-sub">Comprobante de pago</div>
-      <div class="comprobante-destacado">
-        <span class="anexo-name">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
-          <span>${r.comprobante}<small>Subido por el Estudiante</small></span>
-        </span>
-        <span class="anexo-actions">
-          <button class="link-btn" type="button">Visualizar</button>
-          <button class="link-btn" type="button">Descargar</button>
-        </span>
-      </div>`;
-  }
-
-  const notaEnGestion = r.esperaDe === 'Decano'
-    ? 'La solicitud está en manos del Decano, a la espera de su decisión. Solo puedes consultarla mientras no sea tu turno.'
-    : 'La solicitud está a la espera de una acción del Estudiante. Solo puedes consultarla mientras no sea tu turno.';
-  const notas = {
-    'Pendiente': 'Es tu turno de actuar sobre esta solicitud. Las acciones de remitir al Decano y rechazar se ejecutan desde esta misma vista.',
-    'En Gestión': notaEnGestion,
-    'Pendiente de Respuesta': 'El Decano ya tomó una decisión sobre esta solicitud. Debes enviar la respuesta correspondiente al estudiante.',
-    'Pendiente de Verificación': 'El estudiante subió el comprobante de pago del examen supletorio. Verifícalo para cerrar el trámite.',
-    'Respondida': 'El trámite ya fue cerrado. El detalle es de solo lectura.'
-  };
-  document.getElementById('mNote').textContent = notas[r.estado] || '';
-
-  const pies = {
-    'Pendiente': `<button class="btn btn-ghost" data-close>Cerrar</button>
-       <button class="btn btn-danger" data-accion="rechazar" data-rad="${r.rad}">Rechazar solicitud</button>
-       <button class="btn btn-primary" data-accion="remitir" data-rad="${r.rad}">Remitir al Decano</button>`,
-    'Pendiente de Respuesta': `<button class="btn btn-ghost" data-close>Cerrar</button>
-       <button class="btn btn-primary" data-accion="responder" data-rad="${r.rad}">Enviar respuesta al Estudiante</button>`,
-    'Pendiente de Verificación': `<button class="btn btn-ghost" data-close>Cerrar</button>
-       <button class="btn btn-danger" data-accion="rechazarComprobante" data-rad="${r.rad}">Rechazar</button>
-       <button class="btn btn-primary" data-accion="aprobarComprobante" data-rad="${r.rad}">Aprobar</button>`
-  };
-  document.getElementById('mFoot').innerHTML = pies[r.estado] || `<button class="btn btn-ghost" data-close>Cerrar</button>`;
-
-  backdrop.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('mClose').focus();
-}
-function cerrarDetalle(){
-  backdrop.classList.remove('open');
-  document.body.style.overflow = '';
-  if(lastFocus) lastFocus.focus();
-}
-
-/* ---------- Detalle de respuesta (HU-07 Funcionario, solo lectura) ---------- */
-function abrirDetalleRespuesta(rad){
-  const r = DATA.find(x => x.rad === rad);
-  if(!r) return;
-  lastFocus = document.activeElement;
-  document.getElementById('mTitle').textContent = 'Detalle de la respuesta';
-  document.getElementById('mRad').textContent = r.rad;
-  document.getElementById('mProc').textContent = r.proc;
-  document.getElementById('mEst').textContent = r.est;
-  document.getElementById('mDoc').textContent = r.doc;
-  document.getElementById('mProg').textContent = r.prog;
-  document.getElementById('mFec').textContent = fmtFecha(r.fecha);
-  document.getElementById('mEstado').innerHTML = `<span class="estado">${iconEstado(r.estado)}${r.estado}</span>`;
-  document.getElementById('mJust').textContent = r.just;
-
-  document.getElementById('mAnexos').innerHTML = r.anexos.map(a => `
-    <li>
-      <span class="anexo-name">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
-        <span>${a}</span>
-      </span>
-      <span class="anexo-actions">
-        <button class="link-btn">Visualizar</button>
-        <button class="link-btn">Descargar</button>
-      </span>
-    </li>`).join('');
-
-  const aprobada = r.decision === 'Aprobada';
-  const chip = `<span class="chip-decision ${aprobada ? 'is-aprobada' : 'is-rechazada'}">${r.decision}</span>`;
-  let extra = `<div class="modal-sub">Decisión</div><div class="field-block">${chip}</div>`;
-
-  if(aprobada && r.resolucion){
-    extra += `
-      <div class="modal-sub">Resolución</div>
-      <ul class="anexos">
-        <li>
-          <span class="anexo-name">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
-            <span>${r.resolucion}</span>
-          </span>
-          <span class="anexo-actions">
-            <button class="link-btn" type="button">Visualizar</button>
-            <button class="link-btn" type="button" data-descargar-resolucion>Descargar</button>
-          </span>
-        </li>
-      </ul>`;
-  } else if(aprobada){
-    extra += `<p class="dialog-note">Este proceso no genera un documento de resolución descargable.</p>`;
-  } else {
-    extra += `
-      <div class="modal-sub">Motivo del rechazo</div>
-      <div class="just">${r.observacion || 'No se registró una observación.'}</div>`;
-  }
-
-  document.getElementById('mRespuestaExtra').innerHTML = extra;
-  document.getElementById('mNote').textContent = 'El trámite ya fue cerrado. El detalle es de solo lectura.';
-  document.getElementById('mFoot').innerHTML = `<button class="btn btn-ghost" data-close>Cerrar</button>`;
-
-  backdrop.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('mClose').focus();
-}
-
 /* ---------- Navegación entre secciones ---------- */
 const VIEWS = {usuario:'Mi usuario', solicitudes:'Solicitudes', respuestas:'Respuestas'};
 function irA(v){
@@ -1226,32 +1445,25 @@ document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('clic
 
 document.getElementById('tbody').addEventListener('click', e => {
   const b = e.target.closest('.btn-eye');
-  if(b) abrirDetalle(b.dataset.rad);
+  if(b) abrirDetallePagina(b.dataset.rad, 'solicitudes');
 });
 document.getElementById('pager').addEventListener('click', e => {
   const b = e.target.closest('button[data-go]');
   if(b && !b.disabled){ page = Number(b.dataset.go); render(); window.scrollTo({top:0,behavior:'smooth'}); }
 });
 
-document.getElementById('mClose').addEventListener('click', cerrarDetalle);
-backdrop.addEventListener('click', e => {
-  if(e.target === backdrop || e.target.hasAttribute('data-close')) cerrarDetalle();
-});
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape' && backdrop.classList.contains('open')) cerrarDetalle();
-});
-
-document.getElementById('mFoot').addEventListener('click', e => {
+document.getElementById('dVolver').addEventListener('click', volverDeDetalle);
+document.getElementById('dAcciones').addEventListener('click', e => {
   const bRechazar = e.target.closest('[data-accion="rechazar"]');
   const bRemitir  = e.target.closest('[data-accion="remitir"]');
   const bResponder = e.target.closest('[data-accion="responder"]');
   const bAprobarComp = e.target.closest('[data-accion="aprobarComprobante"]');
   const bRechazarComp = e.target.closest('[data-accion="rechazarComprobante"]');
-  if(bRechazar){ cerrarDetalle(); abrirRechazo(bRechazar.dataset.rad); }
-  if(bRemitir){ cerrarDetalle(); abrirRemision(bRemitir.dataset.rad); }
-  if(bResponder){ cerrarDetalle(); abrirRespuesta(bResponder.dataset.rad); }
-  if(bAprobarComp){ cerrarDetalle(); abrirAprobarComprobante(bAprobarComp.dataset.rad); }
-  if(bRechazarComp){ cerrarDetalle(); abrirRechazarComprobante(bRechazarComp.dataset.rad); }
+  if(bRechazar) abrirRechazo(bRechazar.dataset.rad);
+  if(bRemitir) abrirRemision(bRemitir.dataset.rad);
+  if(bResponder) abrirRespuesta(bResponder.dataset.rad);
+  if(bAprobarComp) abrirAprobarComprobante(bAprobarComp.dataset.rad);
+  if(bRechazarComp) abrirRechazarComprobante(bRechazarComp.dataset.rad);
 });
 
 /* ---------- Diálogos de acción: Rechazar solicitud / Remitir al Decano ---------- */
@@ -1461,6 +1673,7 @@ function confirmarAccion(){
     render();
     renderRespuestas();
     mostrarToast('<b>Solicitud rechazada.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
+    volverSiEnDetalle();
     return;
   }
 
@@ -1471,6 +1684,8 @@ function confirmarAccion(){
     r.esperaDe = 'Decano';
     cerrarAccion();
     render();
+    mostrarToast('<b>Solicitud remitida al Decano.</b><br>Quedará a la espera de su decisión.');
+    volverSiEnDetalle();
     return;
   }
 
@@ -1496,11 +1711,14 @@ function confirmarAccion(){
     cerrarAccion();
     render();
     renderRespuestas();
-    if(aprobada){
-      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Copia de la resolución guardada en las carpetas <b>DARCA</b> y <b>DECANATURA</b>.');
+    if(aprobada && r.proc !== PROC.ES){
+      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Debe acercarse a Decanatura a firmar la Resolución física. Una copia quedará archivada en <b>Decanatura</b> y otra se remitirá a <b>DARCA</b>.');
+    } else if(aprobada){
+      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Se notificó la aprobación del examen supletorio.');
     } else {
       mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Se notificó el rechazo de la solicitud y el trámite quedó cerrado.');
     }
+    volverSiEnDetalle();
     return;
   }
 
@@ -1511,6 +1729,7 @@ function confirmarAccion(){
     render();
     renderRespuestas();
     mostrarToast('<b>Comprobante aprobado.</b><br>La solicitud quedó cerrada como aprobada y se notificó al Estudiante.');
+    volverSiEnDetalle();
     return;
   }
 
@@ -1532,6 +1751,7 @@ function confirmarAccion(){
     render();
     renderRespuestas();
     mostrarToast('<b>Comprobante rechazado.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
+    volverSiEnDetalle();
   }
 }
 
