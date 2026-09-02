@@ -257,6 +257,9 @@
   .dl{display:grid;grid-template-columns:170px 1fr;gap:9px 14px;font-size:13px;}
   .dl dt{color:var(--muted);font-weight:600;}
   .dl dd{margin:0;color:var(--text);}
+  .plain-list{margin:0;padding-left:18px;}
+  .plain-list li{margin-bottom:3px;}
+  .plain-list:empty::before{content:'—';color:var(--muted);}
   .modal-sub{
     margin:20px 0 9px;font-size:12px;font-weight:700;color:var(--navy-ink);
     text-transform:uppercase;letter-spacing:.5px;
@@ -650,6 +653,8 @@
       <div class="modal-sub">Justificación de la solicitud</div>
       <div class="just" id="mJust"></div>
 
+      <div id="mProcesoExtra"></div>
+
       <div class="modal-sub">Anexos adjuntos</div>
       <ul class="anexos" id="mAnexos"></ul>
 
@@ -779,6 +784,11 @@ function fmtFecha(iso){
   let h = d.getHours(); const ampm = h >= 12 ? 'pm' : 'am';
   h = h % 12 || 12;
   return `${dd}/${mm}/${d.getFullYear()} - ${h}:${String(d.getMinutes()).padStart(2,'0')} ${ampm}`;
+}
+function fmtFechaSolo(iso){
+  if(!iso) return '';
+  const [y,m,dd] = iso.split('-');
+  return `${dd}/${m}/${y}`;
 }
 
 /* ---------- Filtrado / orden ---------- */
@@ -995,6 +1005,56 @@ document.getElementById('pagerR').addEventListener('click', e => {
 const backdrop = document.getElementById('backdrop');
 let lastFocus = null;
 
+/* ---------- Campos estructurados propios del tipo de proceso ---------- */
+function renderProcesoExtra(r){
+  if(r.proc === PROC.CM){
+    const asignaturas = (r.asignaturas || []).map(a => `<li>${a.cod} — ${a.nombre}</li>`).join('');
+    const pazYSalvos = (r.pazYSalvos || []).map(p => `<li><strong>${p.entidad}:</strong> ${p.archivo} <small>(expedido ${fmtFechaSolo(p.fecha)})</small></li>`).join('');
+    return `
+      <div class="modal-sub">Asignaturas del periodo y paz y salvo</div>
+      <dl class="dl">
+        <dt>Asignaturas matriculadas</dt><dd><ul class="plain-list">${asignaturas}</ul></dd>
+        <dt>Paz y salvos adjuntos</dt><dd><ul class="plain-list">${pazYSalvos}</ul></dd>
+      </dl>`;
+  }
+  if(r.proc === PROC.CA){
+    const asignaturas = (r.asignaturas || []).map(a => `<li>${a.cod} — ${a.nombre}</li>`).join('');
+    return `
+      <div class="modal-sub">Asignaturas a cancelar</div>
+      <dl class="dl">
+        <dt>Asignaturas</dt><dd><ul class="plain-list">${asignaturas}</ul></dd>
+      </dl>`;
+  }
+  if(r.proc === PROC.ES){
+    const esCruce = r.causa === 'cruce';
+    let html = `
+      <div class="modal-sub">Datos del examen</div>
+      <dl class="dl">
+        <dt>Asignatura del examen</dt><dd>${r.examen || ''}</dd>
+        <dt>Código de la asignatura</dt><dd>${r.codExamen || ''}</dd>
+        <dt>Grupo</dt><dd>${r.grupo || ''}</dd>
+        <dt>Fecha del examen no presentado</dt><dd>${fmtFechaSolo(r.fechaExamen)}</dd>
+        <dt>Fecha propuesta</dt><dd>${fmtFechaSolo(r.propuesta)}</dd>
+        <dt>Teléfono de contacto</dt><dd>${r.telefono || ''}</dd>
+        <dt>Firma del docente</dt><dd>${r.firmaDocente || ''}</dd>
+        <dt>Tipo de causa</dt><dd>${esCruce ? 'Cruce con otra evaluación' : 'Otra causa'}</dd>
+      </dl>`;
+    if(esCruce && r.cruce){
+      html += `
+      <div class="modal-sub">Datos del cruce</div>
+      <dl class="dl">
+        <dt>Asignatura en cruce</dt><dd>${r.cruce.asignatura || ''}</dd>
+        <dt>Código</dt><dd>${r.cruce.codigo || ''}</dd>
+        <dt>Fecha</dt><dd>${fmtFechaSolo(r.cruce.fecha)}</dd>
+        <dt>Hora</dt><dd>${r.cruce.hora || ''}</dd>
+        <dt>Firma del docente</dt><dd>${r.cruce.firmaDocente || ''}</dd>
+      </dl>`;
+    }
+    return html;
+  }
+  return '';
+}
+
 function abrirDetalle(rad){
   const r = DATA.find(x => x.rad === rad);
   if(!r) return;
@@ -1009,6 +1069,7 @@ function abrirDetalle(rad){
   document.getElementById('mFec').textContent = fmtFecha(r.fecha);
   document.getElementById('mEstado').innerHTML = `<span class="estado">${iconEstado(r.estado)}${r.estado}</span>`;
   document.getElementById('mJust').textContent = r.just;
+  document.getElementById('mProcesoExtra').innerHTML = renderProcesoExtra(r);
 
   document.getElementById('mAnexos').innerHTML = r.anexos.map(a => `
     <li>
