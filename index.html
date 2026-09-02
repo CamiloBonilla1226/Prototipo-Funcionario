@@ -389,14 +389,15 @@
   }
   .mini-fields .field label{color:var(--muted);}
 
-  .mini-table{width:100%;border-collapse:collapse;font-size:12.8px;}
+  .mini-table{width:100%;max-width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;font-size:12.8px;}
   .mini-table th{
     text-align:left;padding:8px 10px;background:var(--panel);color:var(--muted);
     font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
-    border-bottom:1px solid var(--line);
+    border-bottom:1px solid var(--line);overflow-wrap:anywhere;white-space:normal;
   }
-  .mini-table td{padding:10px;border-bottom:1px solid var(--line-soft);}
+  .mini-table td{padding:10px;border-bottom:1px solid var(--line-soft);overflow-wrap:anywhere;}
   .mini-table tr:last-child td{border-bottom:0;}
+  .mini-table th:first-child,.mini-table td:first-child{width:32%;}
   .mini-table .muted{color:var(--muted);}
 
   .resolucion-note{
@@ -1327,12 +1328,10 @@ function abrirDetallePagina(rad, origen){
     const filasAsig = (r.asignaturas || []).map(a => `<tr><td>${a.cod}</td><td>${a.nombre}</td></tr>`).join('');
     document.getElementById('dProcesoCard').hidden = false;
     document.getElementById('dProcesoExtra').innerHTML = `
-      <div class="table-scroll">
-        <table class="mini-table">
-          <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
-          <tbody>${filasAsig}</tbody>
-        </table>
-      </div>`;
+      <table class="mini-table">
+        <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
+        <tbody>${filasAsig}</tbody>
+      </table>`;
 
     dPazCard.hidden = false;
     document.getElementById('dPazSalvos').innerHTML = `<ul class="anexos">${documentosHTML(r.pazYSalvos)}</ul>`;
