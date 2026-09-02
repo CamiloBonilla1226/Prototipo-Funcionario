@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestión de Procesos Académicos FIET — Funcionario Académico</title>
+<style>
+  :root{
+    --navy-900:#1B2660;
+    --navy-800:#232F6E;
+    --navy-700:#2A3A86;
+    --navy-ink:#1F2A6D;
+    --accent:#B23B2E;
+    --link:#2F6FD0;
+    --amber:#E0952B;
+    --state-blue:#3B6FD4;
+    --green:#2E9E6B;
+    --red:#D0463B;
+    --panel:#F4F5F8;
+    --line:#E3E6EC;
+    --line-soft:#EDEFF3;
+    --text:#2C3038;
+    --muted:#6E7480;
+    --zebra:#FAFBFC;
+    --sidebar-w:210px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI","Nunito Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    color:var(--text);
+    background:#fff;
+    font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit;}
+
+  /* ---------- Layout ---------- */
+  .app{display:flex;min-height:100vh;}
+  .sidebar{
+    width:var(--sidebar-w);flex:0 0 var(--sidebar-w);
+    background:var(--navy-900);
+    display:flex;flex-direction:column;
+  }
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+
+  /* ---------- Sidebar ---------- */
+  .crest{
+    height:112px;display:flex;align-items:center;justify-content:center;
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .crest svg,.crest img{display:block;object-fit:contain;}
+  .nav{padding:22px 0 0 0;}
+  .nav-item{
+    width:100%;display:flex;align-items:center;gap:11px;
+    padding:11px 16px;background:none;border:0;cursor:pointer;
+    color:#EDEFF6;font-size:13.5px;text-align:left;
+    border-left:3px solid transparent;
+  }
+  .nav-item:hover{background:rgba(255,255,255,.07);}
+  .nav-item.is-active{background:rgba(255,255,255,.11);border-left-color:#fff;font-weight:600;}
+  .nav-item svg{flex:0 0 auto;}
+  .nav-item .bar{opacity:.55;}
+  .nav-item:focus-visible{outline:2px solid #9FB6FF;outline-offset:-2px;}
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    height:82px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px;border-bottom:1px solid var(--line);background:#fff;
+  }
+  .app-title{font-size:19px;font-weight:700;color:var(--navy-ink);letter-spacing:.1px;margin:0;}
+  .user-chip{position:relative;display:flex;align-items:center;}
+  .user-chip-btn{
+    display:flex;align-items:center;gap:11px;background:none;border:0;
+    cursor:pointer;padding:6px 8px;border-radius:5px;font-family:inherit;
+  }
+  .user-chip-btn:hover{background:var(--panel);}
+  .user-chip-btn:focus-visible{outline:2px solid #B9C7EE;outline-offset:1px;}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;border:1.5px solid var(--navy-ink);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:12.5px;color:var(--navy-ink);
+  }
+  .user-meta{line-height:1.35;text-align:left;}
+  .user-name{font-weight:700;font-size:13px;color:var(--navy-ink);}
+  .user-role{font-size:12.5px;color:var(--navy-ink);display:flex;align-items:center;gap:5px;}
+  .user-chip-btn[aria-expanded="true"] .user-role svg{transform:rotate(180deg);}
+  .user-dropdown{
+    position:absolute;top:calc(100% + 6px);right:0;min-width:190px;
+    background:#fff;border:1px solid var(--line);border-radius:5px;
+    box-shadow:0 12px 28px rgba(20,26,56,.2);padding:6px;z-index:60;
+  }
+  .user-dropdown-item{
+    width:100%;display:flex;align-items:center;gap:10px;
+    background:none;border:0;padding:10px 11px;border-radius:3px;
+    font-size:13px;font-weight:600;color:var(--red);cursor:pointer;
+    text-align:left;font-family:inherit;
+  }
+  .user-dropdown-item:hover{background:#FBE9E7;}
+  .user-dropdown-item:focus-visible{outline:2px solid #B9C7EE;outline-offset:1px;}
+
+  /* ---------- Content ---------- */
+  .content{flex:1;padding:16px 26px 0;}
+  .crumbs{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
+  .crumbs b{color:var(--navy-ink);font-weight:600;}
+  .crumbs span{margin:0 7px;color:var(--navy-ink);font-weight:700;}
+  .section-tab{
+    display:inline-block;font-size:15px;font-weight:600;color:var(--navy-ink);
+    padding-bottom:7px;border-bottom:3px solid var(--accent);margin-bottom:26px;
+  }
+
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:3px;
+    box-shadow:0 1px 3px rgba(27,38,96,.06);
+    max-width:1020px;margin:0 auto 26px;
+  }
+  .card-head{
+    display:flex;align-items:center;gap:10px;
+    padding:15px 18px;border-bottom:1px solid var(--line-soft);
+  }
+  .card-head h2{margin:0;font-size:15px;font-weight:700;color:var(--navy-ink);}
+  .card-body{padding:16px 18px 0;}
+
+  /* ---------- Filters ---------- */
+  .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;padding-bottom:16px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+  .field select,.field input{
+    height:34px;border:1px solid var(--line);border-radius:3px;
+    padding:0 10px;font-size:13px;color:var(--text);background:#fff;min-width:190px;
+  }
+  .field select:focus,.field input:focus{outline:2px solid #B9C7EE;outline-offset:0;border-color:var(--navy-700);}
+  .search-wrap{position:relative;}
+  .search-wrap input{padding-right:32px;}
+  .search-wrap svg{position:absolute;right:9px;top:9px;opacity:.5;}
+  .btn-clear{
+    height:34px;padding:0 15px;border:1px solid var(--navy-700);background:#fff;
+    color:var(--navy-700);border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+  .btn-clear:hover{background:var(--navy-700);color:#fff;}
+  .btn-clear:focus-visible{outline:2px solid #B9C7EE;outline-offset:2px;}
+
+  /* ---------- Table ---------- */
+  .table-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:860px;}
+  thead th{
+    background:var(--navy-700);color:#fff;font-size:12.5px;font-weight:600;
+    text-align:left;padding:11px 12px;white-space:nowrap;
+    border-right:1px solid rgba(255,255,255,.14);
+  }
+  thead th:last-child{border-right:0;}
+  thead th.sortable{cursor:pointer;user-select:none;}
+  thead th.sortable:hover{background:#31439B;}
+  thead th .sort{margin-left:6px;opacity:.75;}
+  tbody td{
+    padding:11px 12px;font-size:12.8px;border-bottom:1px solid var(--line-soft);
+    border-right:1px solid var(--line-soft);
+    vertical-align:middle;
+  }
+  tbody td:last-child{border-right:0;}
+  tbody tr:nth-child(even){background:var(--zebra);}
+  tbody tr:hover{background:#F1F4FB;}
+  .radicado{font-variant-numeric:tabular-nums;font-weight:600;color:var(--navy-ink);white-space:nowrap;}
+  .doc{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap;}
+  .fecha{white-space:nowrap;color:var(--muted);}
+  .estado{display:flex;align-items:center;gap:7px;white-space:nowrap;}
+  .btn-eye{
+    background:none;border:0;cursor:pointer;padding:4px;border-radius:3px;line-height:0;
+  }
+  .btn-eye:hover{background:#E3EBFA;}
+  .btn-eye:focus-visible{outline:2px solid var(--link);outline-offset:1px;}
+  .acciones-multi{display:flex;align-items:center;gap:4px;}
+
+  /* ---------- Empty state ---------- */
+  .empty{padding:44px 20px;text-align:center;}
+  .empty h3{margin:14px 0 6px;font-size:14.5px;color:var(--navy-ink);}
+  .empty p{margin:0;font-size:13px;color:var(--muted);max-width:430px;margin-inline:auto;line-height:1.55;}
+  .empty .btn-clear{margin-top:16px;}
+
+  /* ---------- Pagination ---------- */
+  .pager{display:flex;justify-content:center;padding:18px 0 20px;}
+  .pager-box{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;}
+  .pager-box button{
+    min-width:42px;height:38px;border:0;border-right:1px solid var(--line);
+    background:#fff;color:var(--navy-ink);font-size:13px;font-weight:600;cursor:pointer;padding:0 12px;
+  }
+  .pager-box button:last-child{border-right:0;}
+  .pager-box button:hover:not(:disabled):not(.is-current){background:#EEF1F9;}
+  .pager-box button.is-current{background:var(--navy-700);color:#fff;cursor:default;}
+  .pager-box button:disabled{color:#B7BCC6;cursor:not-allowed;}
+  .pager-box button.dots{cursor:default;color:var(--muted);}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--line);padding:18px 26px 22px;text-align:center;
+    font-size:11.5px;color:var(--muted);line-height:1.9;background:#fff;
+  }
+
+  /* ---------- Mi usuario ---------- */
+  .user-card{max-width:680px;}
+  .user-card-body{padding:32px 36px 34px;}
+  .user-welcome{
+    text-align:center;color:var(--navy-ink);font-size:19px;font-weight:700;
+    margin:0 0 28px;
+  }
+  .user-grid{display:flex;gap:36px;align-items:flex-start;}
+  .user-side{
+    flex:0 0 108px;display:flex;flex-direction:column;
+    align-items:center;gap:12px;
+  }
+  .user-avatar-big{
+    width:88px;height:88px;border-radius:50%;border:1.5px solid var(--navy-ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;font-weight:700;color:var(--navy-ink);
+  }
+  .user-joined{text-align:center;font-size:12.5px;line-height:1.5;color:var(--text);font-weight:600;}
+  .user-joined span{display:block;}
+  .user-joined b{font-weight:700;}
+  .user-fields{
+    flex:1;display:grid;grid-template-columns:auto 1fr;
+    gap:9px 10px;margin:4px 0 0;font-size:13.5px;
+  }
+  .user-fields dt{font-weight:700;color:var(--navy-ink);white-space:nowrap;}
+  .user-fields dd{margin:0;color:var(--text);}
+  .user-sep{border:0;border-top:1px solid var(--line);margin:26px 0 18px;}
+  .user-roles{margin-bottom:14px;font-size:13.5px;color:var(--text);}
+  .user-roles:last-child{margin-bottom:0;}
+  .user-roles-title{font-weight:700;color:var(--navy-ink);margin-bottom:5px;}
+
+  /* ---------- Placeholder sections ---------- */
+  .placeholder{
+    max-width:1020px;margin:0 auto;border:1px dashed #C3CAD9;border-radius:3px;
+    background:#FBFCFE;padding:52px 26px;text-align:center;
+  }
+  .placeholder h3{margin:0 0 8px;color:var(--navy-ink);font-size:16px;}
+  .placeholder p{margin:0;color:var(--muted);font-size:13px;}
+
+  /* ---------- Modal ---------- */
+  .backdrop{
+    position:fixed;inset:0;background:rgba(20,26,56,.45);
+    display:none;align-items:flex-start;justify-content:center;padding:40px 16px;
+    overflow-y:auto;z-index:50;
+  }
+  .backdrop.open{display:flex;}
+  .modal{
+    background:#fff;border-radius:4px;width:100%;max-width:660px;
+    box-shadow:0 14px 44px rgba(20,26,56,.28);
+  }
+  .modal-head{
+    background:var(--navy-700);color:#fff;padding:14px 18px;
+    display:flex;align-items:center;justify-content:space-between;border-radius:4px 4px 0 0;
+  }
+  .modal-head h3{margin:0;font-size:14.5px;font-weight:700;}
+  .modal-close{background:none;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:0 4px;}
+  .modal-close:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .modal-body{padding:18px;}
+  .dl{display:grid;grid-template-columns:170px 1fr;gap:9px 14px;font-size:13px;}
+  .dl dt{color:var(--muted);font-weight:600;}
+  .dl dd{margin:0;color:var(--text);}
+  .modal-sub{
+    margin:20px 0 9px;font-size:12px;font-weight:700;color:var(--navy-ink);
+    text-transform:uppercase;letter-spacing:.5px;
+  }
+  .just{
+    background:var(--panel);border-left:3px solid var(--navy-700);padding:11px 13px;
+    font-size:13px;line-height:1.6;border-radius:0 3px 3px 0;
+  }
+  .anexos{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:3px;}
+  .anexos li{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 12px;border-bottom:1px solid var(--line-soft);font-size:13px;
+  }
+  .anexos li:last-child{border-bottom:0;}
+  .anexo-name{display:flex;align-items:center;gap:9px;min-width:0;}
+  .anexo-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .anexo-actions{display:flex;gap:14px;flex:0 0 auto;}
+  .link-btn{background:none;border:0;color:var(--link);font-size:12.5px;font-weight:600;cursor:pointer;padding:0;}
+  .link-btn:hover{text-decoration:underline;}
+  .modal-foot{
+    padding:14px 18px;border-top:1px solid var(--line-soft);display:flex;
+    justify-content:flex-end;gap:10px;flex-wrap:wrap;
+  }
+  .btn{height:36px;padding:0 16px;border-radius:3px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;}
+  .btn-ghost{background:var(--panel);border-color:#B7BCC6;color:var(--navy-ink);}
+  .btn-ghost:hover{background:#E7EAF1;border-color:var(--navy-700);}
+  .btn-danger{background:#fff;border-color:var(--red);color:var(--red);}
+  .btn-danger:hover{background:var(--red);color:#fff;}
+  .btn-primary{background:var(--navy-700);color:#fff;}
+  .btn-primary:hover{background:#31439B;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn:focus-visible,.link-btn:focus-visible{outline:2px solid #B9C7EE;outline-offset:2px;}
+  .note{
+    margin:16px 0 0;font-size:12px;color:var(--muted);background:#FFF8E9;
+    border:1px solid #F0DEB4;border-radius:3px;padding:9px 11px;line-height:1.55;
+  }
+
+  /* ---------- Diálogo de acción (Rechazar / Remitir al Decano) ---------- */
+  .modal-accion .modal-head{background:#1B2660;}
+  .modal-accion .btn-primary{background:#1B2660;}
+  .modal-accion .btn-primary:hover{background:#131C49;}
+  .modal-accion .btn-ghost{background:transparent;border:1px solid #1B2660;color:#1B2660;}
+  .modal-accion .btn-ghost:hover{background:rgba(27,38,96,.07);}
+  .dl-compact{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line-soft);}
+  .field-block{margin-bottom:14px;}
+  .field-block > label{display:block;font-size:12.5px;font-weight:600;color:var(--navy-ink);margin-bottom:7px;}
+  .req{color:var(--accent);}
+  .field-block textarea,.gen-form input,.gen-form textarea{
+    width:100%;border:1px solid var(--line);border-radius:3px;padding:9px 11px;
+    font-size:13px;font-family:inherit;color:var(--text);resize:vertical;
+  }
+  .field-block textarea:focus,.gen-form input:focus,.gen-form textarea:focus{
+    outline:2px solid #B9C7EE;outline-offset:0;border-color:var(--navy-700);
+  }
+  .field-block textarea.is-invalid{border-color:var(--accent);}
+  .field-error{margin:7px 0 0;font-size:12px;color:var(--accent);font-weight:600;}
+  .dialog-note{
+    margin:14px 0 0;font-size:12.5px;color:var(--muted);background:var(--panel);
+    border-radius:3px;padding:10px 12px;line-height:1.55;
+  }
+  .segmented{display:flex;border:1px solid var(--navy-700);border-radius:3px;overflow:hidden;margin-bottom:14px;}
+  .seg-btn{
+    flex:1;height:36px;border:0;background:#fff;color:var(--navy-700);
+    font-size:12.8px;font-weight:600;cursor:pointer;
+  }
+  .seg-btn + .seg-btn{border-left:1px solid var(--navy-700);}
+  .seg-btn.is-active{background:var(--navy-700);color:#fff;}
+  .upload-zone{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    border:1.5px dashed #C3CAD9;border-radius:3px;padding:26px 16px;
+    cursor:pointer;text-align:center;background:#FBFCFE;
+  }
+  .upload-zone:hover{border-color:var(--navy-700);background:#F4F6FB;}
+  .upload-zone span{font-size:12.5px;color:var(--muted);}
+  .upload-zone b{color:var(--navy-ink);}
+  .upload-filename{margin:9px 0 0;font-size:12.5px;color:var(--navy-ink);font-weight:600;}
+  .gen-form{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;}
+  .gen-form .field-full{grid-column:1/-1;}
+  .gen-form .field label{
+    display:block;font-size:11.5px;font-weight:600;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;
+  }
+  .chip-decision{
+    display:inline-block;padding:4px 11px;border-radius:20px;
+    font-size:12px;font-weight:700;letter-spacing:.2px;
+  }
+  .chip-decision.is-aprobada{background:#E4F5EC;color:var(--green);}
+  .chip-decision.is-rechazada{background:#FBE9E7;color:var(--red);}
+
+  /* ---------- Comprobante de pago destacado ---------- */
+  .comprobante-destacado{
+    display:flex;align-items:center;gap:12px;margin:14px 0 4px;
+    background:#EFFAF4;border:1.5px solid #BFE7D3;border-left:5px solid var(--green);
+    border-radius:4px;padding:13px 15px;
+  }
+  .comprobante-destacado .anexo-name{gap:11px;}
+  .comprobante-destacado .anexo-name span{
+    font-weight:700;color:var(--navy-ink);font-size:13.5px;white-space:normal;
+  }
+  .comprobante-destacado .anexo-name small{
+    display:block;font-weight:400;color:var(--muted);font-size:11.5px;margin-top:2px;
+  }
+  .comprobante-destacado .anexo-actions{margin-left:auto;}
+
+  /* ---------- Toast de confirmación ---------- */
+  .toast{
+    position:fixed;right:22px;bottom:22px;max-width:380px;z-index:100;
+    background:#1B2660;color:#fff;border-radius:6px;
+    border-left:5px solid var(--green);
+    box-shadow:0 14px 34px rgba(20,26,56,.4);
+    padding:15px 18px;display:flex;gap:12px;align-items:flex-start;
+    opacity:0;transform:translateY(10px) scale(.98);pointer-events:none;
+    transition:opacity .22s ease, transform .22s ease;
+  }
+  .toast.show{opacity:1;transform:translateY(0) scale(1);}
+  .toast-icon{
+    flex:0 0 auto;width:24px;height:24px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+    background:var(--green);
+  }
+  .toast-icon svg{display:block;}
+  .toast-text{font-size:13.2px;line-height:1.6;}
+  .toast-text b{font-weight:700;}
+
+  @media (max-width:860px){
+    :root{--sidebar-w:64px;}
+    .nav-item span.label{display:none;}
+    .nav-item{justify-content:center;padding:13px 0;}
+    .nav-item .bar{display:none;}
+    .app-title{font-size:15px;}
+    .crumbs{margin-bottom:16px;}
+    .dl{grid-template-columns:1fr;gap:3px 0;}
+    .dl dd{margin-bottom:8px;}
+    .gen-form{grid-template-columns:1fr;}
+    .user-grid{flex-direction:column;align-items:center;text-align:center;}
+    .user-fields{grid-template-columns:1fr;text-align:center;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="crest">
+      <img src="img/escudo.png" width="90" height="90" alt="Escudo Universidad del Cauca">
+    </div>
+    <nav class="nav">
+      <button class="nav-item is-active" data-view="usuario">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19a6 6 0 0 1 11 0"/></svg>
+        <span class="bar">|</span><span class="label">Mi usuario</span>
+      </button>
+      <button class="nav-item" data-view="solicitudes">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        <span class="bar">|</span><span class="label">Solicitudes</span>
+      </button>
+      <button class="nav-item" data-view="respuestas">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"><path d="M4 4l16 8-16 8 3-8-3-8z"/></svg>
+        <span class="bar">|</span><span class="label">Respuestas</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+    <header class="topbar">
+      <h1 class="app-title">Gestión de Procesos Académicos FIET</h1>
+      <div class="user-chip">
+        <button class="user-chip-btn" id="userMenuBtn" aria-haspopup="true" aria-expanded="false">
+          <div class="avatar">FA</div>
+          <div class="user-meta">
+            <div class="user-name">Camila Ríos</div>
+            <div class="user-role">Funcionario Académico
+              <svg width="9" height="6" viewBox="0 0 10 6" fill="none" stroke="#1F2A6D" stroke-width="1.5"><path d="M1 1l4 4 4-4"/></svg>
+            </div>
+          </div>
+        </button>
+        <div class="user-dropdown" id="userDropdown" hidden>
+          <button class="user-dropdown-item" id="btnLogout" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B23B2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="crumbs"><b>Funcionario Académico</b><span>&gt;</span><b id="crumbView">Mi usuario</b></div>
+      <div class="section-tab" id="sectionTab">Mi usuario</div>
+
+      <!-- ---------- VISTA: SOLICITUDES ---------- -->
+      <section id="view-solicitudes" hidden>
+        <div class="card">
+          <div class="card-head">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A86" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+            <h2>Gestión de solicitudes</h2>
+          </div>
+
+          <div class="card-body">
+            <div class="filters">
+              <div class="field">
+                <label for="fProceso">Tipo de proceso académico</label>
+                <select id="fProceso">
+                  <option value="">Todos</option>
+                  <option>Cancelación de Matrícula</option>
+                  <option>Cancelación de Asignatura</option>
+                  <option>Examen Supletorio</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fEstado">Estado</label>
+                <select id="fEstado">
+                  <option value="">Todos</option>
+                  <option>Pendiente</option>
+                  <option>En Gestión</option>
+                  <option>Pendiente de Respuesta</option>
+                  <option>Pendiente de Verificación</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fDoc">Número de identificación</label>
+                <div class="search-wrap">
+                  <input id="fDoc" type="text" inputmode="numeric" placeholder="Ej. 1061789234" autocomplete="off">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2C3038" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+                </div>
+              </div>
+              <button class="btn-clear" id="btnClear">Limpiar filtros</button>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Radicado</th>
+                    <th>Estudiante</th>
+                    <th>Documento</th>
+                    <th>Tipo de proceso</th>
+                    <th class="sortable" data-sort="fecha">Fecha de radicación <span class="sort">⇅</span></th>
+                    <th class="sortable" data-sort="estado">Estado <span class="sort">⇅</span></th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+              </table>
+            </div>
+
+            <div class="empty" id="empty" hidden>
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#9AA2B1" stroke-width="1.3"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+              <h3 id="emptyTitle"></h3>
+              <p id="emptyText"></p>
+              <button class="btn-clear" id="emptyClear" hidden>Limpiar filtros</button>
+            </div>
+          </div>
+
+          <div class="pager" id="pager"></div>
+        </div>
+      </section>
+
+      <!-- ---------- VISTA: MI USUARIO ---------- -->
+      <section id="view-usuario">
+        <div class="card user-card">
+          <div class="card-body user-card-body">
+            <h2 class="user-welcome">Bienvenid@, Camila!</h2>
+            <div class="user-grid">
+              <div class="user-side">
+                <div class="user-avatar-big">CR</div>
+                <div class="user-joined">
+                  <span>Te uniste el:</span>
+                  <b>15/02/2023</b>
+                </div>
+              </div>
+              <dl class="user-fields">
+                <dt>Código:</dt><dd>104619021506</dd>
+                <dt>N° identificación:</dt><dd>1061789234</dd>
+                <dt>Tipo de documento:</dt><dd>Cédula de Ciudadanía</dd>
+                <dt>Nombres:</dt><dd>Camila</dd>
+                <dt>Apellidos:</dt><dd>Ríos</dd>
+                <dt>Teléfono:</dt><dd>3117789234</dd>
+                <dt>Usuario:</dt><dd>crios</dd>
+                <dt>Correo:</dt><dd>crios@unicauca.edu.co</dd>
+              </dl>
+            </div>
+
+            <hr class="user-sep">
+
+            <div class="user-roles">
+              <div class="user-roles-title">Roles:</div>
+              <div>Funcionario Académico</div>
+            </div>
+            <div class="user-roles">
+              <div class="user-roles-title">Procesos académicos asignados:</div>
+              <div>Cancelación de Matrícula, Cancelación de Asignatura, Examen Supletorio</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- VISTA: RESPUESTAS ---------- -->
+      <section id="view-respuestas" hidden>
+        <div class="card">
+          <div class="card-head">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A3A86" stroke-width="1.6" stroke-linejoin="round"><path d="M4 4l16 8-16 8 3-8-3-8z"/></svg>
+            <h2>Historial de respuestas</h2>
+          </div>
+
+          <div class="card-body">
+            <div class="filters">
+              <div class="field">
+                <label for="fRProceso">Tipo de proceso académico</label>
+                <select id="fRProceso">
+                  <option value="">Todos</option>
+                  <option>Cancelación de Matrícula</option>
+                  <option>Cancelación de Asignatura</option>
+                  <option>Examen Supletorio</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fRDecision">Estado</label>
+                <select id="fRDecision">
+                  <option value="">Todos</option>
+                  <option>Aprobada</option>
+                  <option>Rechazada</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fRDoc">Número de identificación</label>
+                <div class="search-wrap">
+                  <input id="fRDoc" type="text" inputmode="numeric" placeholder="Ej. 1061789234" autocomplete="off">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2C3038" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+                </div>
+              </div>
+              <button class="btn-clear" id="btnClearR">Limpiar filtros</button>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Radicado</th>
+                    <th>Estudiante</th>
+                    <th>Documento</th>
+                    <th>Tipo de proceso</th>
+                    <th class="sortable" data-sort="fecha">Fecha de radicación <span class="sort">⇅</span></th>
+                    <th class="sortable" data-sort="decision">Estado <span class="sort">⇅</span></th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tbodyR"></tbody>
+              </table>
+            </div>
+
+            <div class="empty" id="emptyR" hidden>
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#9AA2B1" stroke-width="1.3"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+              <h3 id="emptyTitleR"></h3>
+              <p id="emptyTextR"></p>
+              <button class="btn-clear" id="emptyClearR" hidden>Limpiar filtros</button>
+            </div>
+          </div>
+
+          <div class="pager" id="pagerR"></div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      2026 &nbsp;|&nbsp; Gestión de Procesos Académicos FIET &nbsp;|&nbsp; Facultad de Ingeniería Electrónica y Telecomunicaciones<br>
+      División de Tecnologías de la Información y las Comunicaciones &nbsp;|&nbsp; Versión 1.0.0
+    </footer>
+  </div>
+</div>
+
+<!-- ===================== MODAL DETALLE ===================== -->
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="mTitle">Detalle de la solicitud</h3>
+      <button class="modal-close" id="mClose" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="modal-body">
+      <dl class="dl">
+        <dt>Número de radicado</dt><dd id="mRad"></dd>
+        <dt>Tipo de proceso académico</dt><dd id="mProc"></dd>
+        <dt>Estudiante</dt><dd id="mEst"></dd>
+        <dt>Documento</dt><dd id="mDoc"></dd>
+        <dt>Programa</dt><dd id="mProg"></dd>
+        <dt>Fecha de radicación</dt><dd id="mFec"></dd>
+        <dt>Estado actual</dt><dd id="mEstado"></dd>
+      </dl>
+
+      <div class="modal-sub">Justificación de la solicitud</div>
+      <div class="just" id="mJust"></div>
+
+      <div class="modal-sub">Anexos adjuntos</div>
+      <ul class="anexos" id="mAnexos"></ul>
+
+      <div id="mRespuestaExtra"></div>
+
+      <p class="note" id="mNote"></p>
+    </div>
+    <div class="modal-foot" id="mFoot"></div>
+  </div>
+</div>
+
+<!-- ===================== MODAL RECHAZAR / REMITIR AL DECANO ===================== -->
+<div class="backdrop" id="backdropAccion" role="dialog" aria-modal="true" aria-labelledby="aTitle">
+  <div class="modal modal-accion">
+    <div class="modal-head">
+      <h3 id="aTitle">Rechazar solicitud</h3>
+      <button class="modal-close" id="aClose" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="modal-body">
+      <dl class="dl dl-compact">
+        <dt>Estudiante</dt><dd id="aEst"></dd>
+        <dt>Documento</dt><dd id="aDoc"></dd>
+        <dt>Tipo de proceso</dt><dd id="aProc"></dd>
+        <dt>Número de radicado</dt><dd id="aRad"></dd>
+      </dl>
+      <div id="aCentro"></div>
+    </div>
+    <div class="modal-foot" id="aFoot"></div>
+  </div>
+</div>
+
+<!-- ===================== TOAST DE CONFIRMACIÓN ===================== -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="toast-icon" id="toastIcon"></span>
+  <div class="toast-text" id="toastText"></div>
+</div>
+
+<script>
+/* =========================================================
+   Datos simulados — reflejan el modelo de estados de HU-V2
+   Estado que ve el FUNCIONARIO: Pendiente / En Gestión / Respondida
+   ========================================================= */
+const PROC = {
+  CM:'Cancelación de Matrícula',
+  CA:'Cancelación de Asignatura',
+  ES:'Examen Supletorio'
+};
+
+const DATA = [
+  {rad:'2026-CM-0148', est:'Laura Valentina Muñoz',  doc:'1061789234', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-28T09:12', estado:'Pendiente',  just:'Solicito la cancelación de matrícula del periodo académico por motivos de salud debidamente certificados por la EPS, que me impiden continuar con las actividades académicas del semestre.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf','Historia académica.pdf']},
+  {rad:'2026-ES-0147', est:'Andrés Felipe Chantre',  doc:'1002345671', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-28T08:40', estado:'Pendiente',  just:'Solicito examen supletorio de Señales y Sistemas, presentado el 12 de julio, por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf','Visto bueno del docente.pdf']},
+  {rad:'2026-CA-0145', est:'María José Ordóñez',     doc:'1063998877', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-27T15:05', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Control Digital debido al cruce de horario con la práctica empresarial autorizada por coordinación.', anexos:['Solicitud firmada.pdf','Carta de coordinación.pdf']},
+  {rad:'2026-ES-0144', est:'Juan Sebastián Paz',     doc:'1004556612', prog:'Tecnología en Telemática',    proc:PROC.ES, fecha:'2026-07-27T11:22', estado:'En Gestión', esperaDe:'Decano', just:'Solicito examen supletorio de Bases de Datos por calamidad doméstica presentada el día de la evaluación.', anexos:['Solicitud firmada.pdf','Certificado de defunción.pdf']},
+  {rad:'2026-CM-0142', est:'Diana Carolina Bolaños', doc:'1061223344', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T16:48', estado:'Pendiente de Respuesta', decisionDecano:'Aprobada', resolucion:'Resolución 0142-2026.pdf', just:'Solicito la cancelación de matrícula por traslado laboral fuera de la ciudad de Popayán a partir del mes de agosto.', anexos:['Solicitud firmada.pdf','Carta laboral.pdf','Historia académica.pdf']},
+  {rad:'2026-CA-0139', est:'Kevin Steven Muñoz',     doc:'1007889900', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.CA, fecha:'2026-07-24T10:15', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0139-2026.pdf', just:'Solicito la cancelación de la asignatura Electrónica Analógica II por bajo rendimiento derivado de una situación familiar.', anexos:['Solicitud firmada.pdf','Historia académica.pdf']},
+  {rad:'2026-ES-0138', est:'Valeria Astudillo',      doc:'1062556677', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-24T09:03', estado:'Respondida', decision:'Aprobada', just:'Solicito examen supletorio de Ingeniería de Software por participación en la representación deportiva de la Universidad.', anexos:['Solicitud firmada.pdf','Certificado de Bienestar.pdf']},
+  {rad:'2026-CM-0136', est:'Óscar Iván Chicangana',  doc:'1059334455', prog:'Ingeniería en Automática Industrial', proc:PROC.CM, fecha:'2026-07-23T14:30', estado:'Respondida', decision:'Rechazada', observacion:'No se anexó soporte suficiente que justifique la cancelación por motivos económicos alegados.', just:'Solicito la cancelación de matrícula por razones económicas que me impiden sostener el semestre en curso.', anexos:['Solicitud firmada.pdf','Declaración de renta familiar.pdf']},
+  {rad:'2026-CA-0133', est:'Sara Camila Yandi',      doc:'1064112233', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T08:57', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Redes de Computadores por incompatibilidad con el horario de la asignatura homologada.', anexos:['Solicitud firmada.pdf','Acta de homologación.pdf']},
+  {rad:'2026-ES-0131', est:'Nicolás Gómez Trujillo', doc:'1003667788', prog:'Ingeniería Electrónica y Telecomunicaciones', proc:PROC.ES, fecha:'2026-07-21T17:11', estado:'Pendiente de Verificación', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Comunicaciones Digitales por incapacidad médica de tres días.', anexos:['Solicitud firmada.pdf','Incapacidad médica.pdf']},
+  {rad:'2026-CM-0129', est:'Angie Paola Rengifo',    doc:'1060778899', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-20T13:24', estado:'Respondida', decision:'Aprobada', resolucion:'Resolución 0129-2026.pdf', just:'Solicito la cancelación de matrícula por licencia de maternidad durante el periodo académico.', anexos:['Solicitud firmada.pdf','Certificado médico.pdf']},
+  {rad:'2026-CA-0127', est:'Daniel Esteban Vidal',   doc:'1058445566', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-19T10:02', estado:'Pendiente de Respuesta', decisionDecano:'Rechazada', just:'Solicito la cancelación de la asignatura Instrumentación Industrial por superposición con el curso de nivelación autorizado.', anexos:['Solicitud firmada.pdf']},
+  {rad:'2026-ES-0124', est:'Laura Sofía Muñoz',      doc:'1061789234', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-18T09:45', estado:'Respondida', decision:'Rechazada', observacion:'La incapacidad médica presentada no cubre la fecha de la evaluación programada.', just:'Solicito examen supletorio de Estructuras de Datos por incapacidad médica el día de la evaluación.', anexos:['Solicitud firmada.pdf','Incapacidad médica EPS.pdf']},
+  {rad:'2026-CM-0121', est:'Camilo Andrés Ledezma',  doc:'1005990011', prog:'Tecnología en Telemática',    proc:PROC.CM, fecha:'2026-07-17T16:20', estado:'En Gestión', esperaDe:'Estudiante', just:'Solicito la cancelación de matrícula por prestación del servicio militar obligatorio.', anexos:['Solicitud firmada.pdf','Orden de presentación.pdf']}
+];
+
+/* PRUEBAS: incorpora la solicitud recién radicada desde el formulario del Estudiante
+   (guardada en localStorage) para poder mostrar de inmediato el flujo completo. Se
+   consume una sola vez: se agrega a esta carga de la página y luego se borra del
+   almacenamiento, así que no queda guardada para siempre ni reaparece al recargar.
+   No hay backend real: esto es solo para la demostración del mockup. */
+(function cargarSolicitudesNuevas(){
+  try{
+    const KEY = 'acbb_solicitudes_nuevas';
+    const nuevas = JSON.parse(localStorage.getItem(KEY) || '[]');
+    nuevas.forEach(r => { if(!DATA.some(x => x.rad === r.rad)) DATA.push(r); });
+    localStorage.removeItem(KEY);
+  }catch(err){ /* almacenamiento no disponible: no afecta el resto del mockup */ }
+})();
+
+const ORDEN_ESTADO = {'Pendiente':0,'En Gestión':1,'Pendiente de Respuesta':2,'Pendiente de Verificación':3,'Respondida':4};
+const PAGE_SIZE = 8;
+let page = 1, sortKey = 'fecha', sortDir = 'desc';
+
+/* ---------- Iconos de estado ---------- */
+function iconDecision(d){
+  if(d === 'Rechazada')
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.5L16 9.5"/></svg>';
+}
+
+function iconEstado(e){
+  if(e === 'Pendiente')
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0952B" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  if(e === 'En Gestión')
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B6FD4" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 10h8l-2-2M16 14H8l2 2"/></svg>';
+  if(e === 'Pendiente de Respuesta')
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A4FC2" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M13 8l4 4-4 4"/></svg>';
+  if(e === 'Pendiente de Verificación')
+    return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C77D14" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.2 2.2L16 9.5"/><path d="M12 6.2v0"/></svg>';
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.5L16 9.5"/></svg>';
+}
+
+function fmtFecha(iso){
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  let h = d.getHours(); const ampm = h >= 12 ? 'pm' : 'am';
+  h = h % 12 || 12;
+  return `${dd}/${mm}/${d.getFullYear()} - ${h}:${String(d.getMinutes()).padStart(2,'0')} ${ampm}`;
+}
+
+/* ---------- Filtrado / orden ---------- */
+function getFiltered(){
+  const p = document.getElementById('fProceso').value;
+  const e = document.getElementById('fEstado').value;
+  const d = document.getElementById('fDoc').value.trim();
+  let rows = DATA.filter(r =>
+    r.estado !== 'Respondida' &&
+    (!p || r.proc === p) && (!e || r.estado === e) && (!d || r.doc.includes(d))
+  );
+  rows.sort((a,b)=>{
+    let va, vb;
+    if(sortKey === 'estado'){ va = ORDEN_ESTADO[a.estado]; vb = ORDEN_ESTADO[b.estado]; }
+    else { va = a.fecha; vb = b.fecha; }
+    if(va < vb) return sortDir === 'asc' ? -1 : 1;
+    if(va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return rows;
+}
+function hasFilters(){
+  return !!(document.getElementById('fProceso').value ||
+            document.getElementById('fEstado').value ||
+            document.getElementById('fDoc').value.trim());
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const rows = getFiltered();
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  if(page > totalPages) page = totalPages;
+
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('empty');
+  const table = document.querySelector('.table-scroll');
+  const pager = document.getElementById('pager');
+
+  if(rows.length === 0){
+    table.hidden = true; pager.innerHTML = ''; empty.hidden = false;
+    const filtered = hasFilters();
+    document.getElementById('emptyTitle').textContent =
+      filtered ? 'No se encontraron solicitudes' : 'No hay solicitudes pendientes asignadas';
+    document.getElementById('emptyText').textContent = filtered
+      ? 'Ninguna solicitud coincide con los criterios aplicados. Ajusta los filtros o límpialos para volver al listado completo.'
+      : 'En este momento no tienes solicitudes asignadas a tu gestión. Cuando un estudiante radique una solicitud de un proceso a tu cargo, aparecerá aquí.';
+    document.getElementById('emptyClear').hidden = !filtered;
+    return;
+  }
+
+  table.hidden = false; empty.hidden = true;
+  const slice = rows.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+  tbody.innerHTML = slice.map(r => `
+    <tr>
+      <td class="radicado">${r.rad}</td>
+      <td>${r.est}</td>
+      <td class="doc">${r.doc}</td>
+      <td>${r.proc}</td>
+      <td class="fecha">${fmtFecha(r.fecha)}</td>
+      <td><span class="estado">${iconEstado(r.estado)}${r.estado}</span></td>
+      <td>
+        <button class="btn-eye" data-rad="${r.rad}" title="Ver detalle" aria-label="Ver detalle de ${r.rad}">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2F6FD0" stroke-width="1.7">
+            <path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.7"/>
+          </svg>
+        </button>
+      </td>
+    </tr>`).join('');
+
+  renderPager(totalPages);
+}
+
+function renderPager(total){
+  const pager = document.getElementById('pager');
+  let btns = `<button ${page===1?'disabled':''} data-go="${page-1}">&lt; Anterior</button>`;
+  const nums = [];
+  for(let i=1;i<=total;i++){
+    if(i===1 || i===total || Math.abs(i-page)<=1) nums.push(i);
+    else if(nums[nums.length-1] !== '…') nums.push('…');
+  }
+  nums.forEach(n => {
+    btns += (n === '…')
+      ? `<button class="dots" disabled>…</button>`
+      : `<button class="${n===page?'is-current':''}" data-go="${n}">${n}</button>`;
+  });
+  btns += `<button ${page===total?'disabled':''} data-go="${page+1}">Siguiente &gt;</button>`;
+  pager.innerHTML = `<div class="pager-box">${btns}</div>`;
+}
+
+/* ---------- Vista: Respuestas (historial de solo lectura) ---------- */
+const ORDEN_DECISION = {'Aprobada':0,'Rechazada':1};
+let pageR = 1, sortKeyR = 'fecha', sortDirR = 'desc';
+
+function getFilteredRespuestas(){
+  const p = document.getElementById('fRProceso').value;
+  const dec = document.getElementById('fRDecision').value;
+  const d = document.getElementById('fRDoc').value.trim();
+  let rows = DATA.filter(r =>
+    r.estado === 'Respondida' &&
+    (!p || r.proc === p) && (!dec || r.decision === dec) && (!d || r.doc.includes(d))
+  );
+  rows.sort((a,b)=>{
+    let va, vb;
+    if(sortKeyR === 'decision'){ va = ORDEN_DECISION[a.decision]; vb = ORDEN_DECISION[b.decision]; }
+    else { va = a.fecha; vb = b.fecha; }
+    if(va < vb) return sortDirR === 'asc' ? -1 : 1;
+    if(va > vb) return sortDirR === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return rows;
+}
+function hasFiltersR(){
+  return !!(document.getElementById('fRProceso').value ||
+            document.getElementById('fRDecision').value ||
+            document.getElementById('fRDoc').value.trim());
+}
+
+function renderRespuestas(){
+  const rows = getFilteredRespuestas();
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  if(pageR > totalPages) pageR = totalPages;
+
+  const tbody = document.getElementById('tbodyR');
+  const empty = document.getElementById('emptyR');
+  const table = document.querySelector('#view-respuestas .table-scroll');
+  const pager = document.getElementById('pagerR');
+
+  if(rows.length === 0){
+    table.hidden = true; pager.innerHTML = ''; empty.hidden = false;
+    const filtered = hasFiltersR();
+    document.getElementById('emptyTitleR').textContent =
+      filtered ? 'No se encontraron respuestas' : 'Aún no hay solicitudes respondidas';
+    document.getElementById('emptyTextR').textContent = filtered
+      ? 'Ninguna respuesta coincide con los criterios aplicados. Ajusta los filtros o límpialos para volver al listado completo.'
+      : 'Cuando cierres un trámite de un proceso a tu cargo, quedará registrado aquí como historial de solo lectura.';
+    document.getElementById('emptyClearR').hidden = !filtered;
+    return;
+  }
+
+  table.hidden = false; empty.hidden = true;
+  const slice = rows.slice((pageR-1)*PAGE_SIZE, pageR*PAGE_SIZE);
+  tbody.innerHTML = slice.map(r => {
+    return `
+    <tr>
+      <td class="radicado">${r.rad}</td>
+      <td>${r.est}</td>
+      <td class="doc">${r.doc}</td>
+      <td>${r.proc}</td>
+      <td class="fecha">${fmtFecha(r.fecha)}</td>
+      <td><span class="estado">${iconDecision(r.decision)}${r.decision}</span></td>
+      <td>
+        <button class="btn-eye" data-rad="${r.rad}" title="Ver detalle" aria-label="Ver detalle de ${r.rad}">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2F6FD0" stroke-width="1.7">
+            <path d="M2 12s3.8-6.5 10-6.5S22 12 22 12s-3.8 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.7"/>
+          </svg>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  renderPagerR(totalPages);
+}
+
+function renderPagerR(total){
+  const pager = document.getElementById('pagerR');
+  let btns = `<button ${pageR===1?'disabled':''} data-go="${pageR-1}">&lt; Anterior</button>`;
+  const nums = [];
+  for(let i=1;i<=total;i++){
+    if(i===1 || i===total || Math.abs(i-pageR)<=1) nums.push(i);
+    else if(nums[nums.length-1] !== '…') nums.push('…');
+  }
+  nums.forEach(n => {
+    btns += (n === '…')
+      ? `<button class="dots" disabled>…</button>`
+      : `<button class="${n===pageR?'is-current':''}" data-go="${n}">${n}</button>`;
+  });
+  btns += `<button ${pageR===total?'disabled':''} data-go="${pageR+1}">Siguiente &gt;</button>`;
+  pager.innerHTML = `<div class="pager-box">${btns}</div>`;
+}
+
+function limpiarRespuestas(){
+  document.getElementById('fRProceso').value  = '';
+  document.getElementById('fRDecision').value = '';
+  document.getElementById('fRDoc').value      = '';
+  pageR = 1; renderRespuestas();
+}
+
+['fRProceso','fRDecision'].forEach(id => document.getElementById(id).addEventListener('change', () => { pageR=1; renderRespuestas(); }));
+document.getElementById('fRDoc').addEventListener('input', () => { pageR=1; renderRespuestas(); });
+document.getElementById('btnClearR').addEventListener('click', limpiarRespuestas);
+document.getElementById('emptyClearR').addEventListener('click', limpiarRespuestas);
+
+document.querySelectorAll('#view-respuestas th.sortable').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.sort;
+  sortDirR = (sortKeyR === k && sortDirR === 'asc') ? 'desc' : (sortKeyR === k ? 'asc' : 'asc');
+  sortKeyR = k; renderRespuestas();
+}));
+
+document.getElementById('tbodyR').addEventListener('click', e => {
+  const b = e.target.closest('.btn-eye');
+  if(b) abrirDetalleRespuesta(b.dataset.rad);
+});
+document.getElementById('mRespuestaExtra').addEventListener('click', e => {
+  if(e.target.closest('[data-descargar-resolucion]')){
+    mostrarToast('<b>Descarga simulada.</b><br>En la versión final, la resolución se guardará en las carpetas de <b>DARCA</b> y <b>DECANATURA</b>.');
+  }
+});
+document.getElementById('pagerR').addEventListener('click', e => {
+  const b = e.target.closest('button[data-go]');
+  if(b && !b.disabled){ pageR = Number(b.dataset.go); renderRespuestas(); window.scrollTo({top:0,behavior:'smooth'}); }
+});
+
+/* ---------- Modal detalle (HU-02 Funcionario) ---------- */
+const backdrop = document.getElementById('backdrop');
+let lastFocus = null;
+
+function abrirDetalle(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  lastFocus = document.activeElement;
+  document.getElementById('mTitle').textContent = 'Detalle de la solicitud';
+  document.getElementById('mRespuestaExtra').innerHTML = '';
+  document.getElementById('mRad').textContent = r.rad;
+  document.getElementById('mProc').textContent = r.proc;
+  document.getElementById('mEst').textContent = r.est;
+  document.getElementById('mDoc').textContent = r.doc;
+  document.getElementById('mProg').textContent = r.prog;
+  document.getElementById('mFec').textContent = fmtFecha(r.fecha);
+  document.getElementById('mEstado').innerHTML = `<span class="estado">${iconEstado(r.estado)}${r.estado}</span>`;
+  document.getElementById('mJust').textContent = r.just;
+
+  document.getElementById('mAnexos').innerHTML = r.anexos.map(a => `
+    <li>
+      <span class="anexo-name">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+        <span>${a}</span>
+      </span>
+      <span class="anexo-actions">
+        <button class="link-btn">Visualizar</button>
+        <button class="link-btn">Descargar</button>
+      </span>
+    </li>`).join('');
+
+  if(r.estado === 'Pendiente de Verificación' && r.comprobante){
+    document.getElementById('mRespuestaExtra').innerHTML = `
+      <div class="modal-sub">Comprobante de pago</div>
+      <div class="comprobante-destacado">
+        <span class="anexo-name">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+          <span>${r.comprobante}<small>Subido por el Estudiante</small></span>
+        </span>
+        <span class="anexo-actions">
+          <button class="link-btn" type="button">Visualizar</button>
+          <button class="link-btn" type="button">Descargar</button>
+        </span>
+      </div>`;
+  }
+
+  const notaEnGestion = r.esperaDe === 'Decano'
+    ? 'La solicitud está en manos del Decano, a la espera de su decisión. Solo puedes consultarla mientras no sea tu turno.'
+    : 'La solicitud está a la espera de una acción del Estudiante. Solo puedes consultarla mientras no sea tu turno.';
+  const notas = {
+    'Pendiente': 'Es tu turno de actuar sobre esta solicitud. Las acciones de remitir al Decano y rechazar se ejecutan desde esta misma vista.',
+    'En Gestión': notaEnGestion,
+    'Pendiente de Respuesta': 'El Decano ya tomó una decisión sobre esta solicitud. Debes enviar la respuesta correspondiente al estudiante.',
+    'Pendiente de Verificación': 'El estudiante subió el comprobante de pago del examen supletorio. Verifícalo para cerrar el trámite.',
+    'Respondida': 'El trámite ya fue cerrado. El detalle es de solo lectura.'
+  };
+  document.getElementById('mNote').textContent = notas[r.estado] || '';
+
+  const pies = {
+    'Pendiente': `<button class="btn btn-ghost" data-close>Cerrar</button>
+       <button class="btn btn-danger" data-accion="rechazar" data-rad="${r.rad}">Rechazar solicitud</button>
+       <button class="btn btn-primary" data-accion="remitir" data-rad="${r.rad}">Remitir al Decano</button>`,
+    'Pendiente de Respuesta': `<button class="btn btn-ghost" data-close>Cerrar</button>
+       <button class="btn btn-primary" data-accion="responder" data-rad="${r.rad}">Enviar respuesta al Estudiante</button>`,
+    'Pendiente de Verificación': `<button class="btn btn-ghost" data-close>Cerrar</button>
+       <button class="btn btn-danger" data-accion="rechazarComprobante" data-rad="${r.rad}">Rechazar</button>
+       <button class="btn btn-primary" data-accion="aprobarComprobante" data-rad="${r.rad}">Aprobar</button>`
+  };
+  document.getElementById('mFoot').innerHTML = pies[r.estado] || `<button class="btn btn-ghost" data-close>Cerrar</button>`;
+
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('mClose').focus();
+}
+function cerrarDetalle(){
+  backdrop.classList.remove('open');
+  document.body.style.overflow = '';
+  if(lastFocus) lastFocus.focus();
+}
+
+/* ---------- Detalle de respuesta (HU-07 Funcionario, solo lectura) ---------- */
+function abrirDetalleRespuesta(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  lastFocus = document.activeElement;
+  document.getElementById('mTitle').textContent = 'Detalle de la respuesta';
+  document.getElementById('mRad').textContent = r.rad;
+  document.getElementById('mProc').textContent = r.proc;
+  document.getElementById('mEst').textContent = r.est;
+  document.getElementById('mDoc').textContent = r.doc;
+  document.getElementById('mProg').textContent = r.prog;
+  document.getElementById('mFec').textContent = fmtFecha(r.fecha);
+  document.getElementById('mEstado').innerHTML = `<span class="estado">${iconEstado(r.estado)}${r.estado}</span>`;
+  document.getElementById('mJust').textContent = r.just;
+
+  document.getElementById('mAnexos').innerHTML = r.anexos.map(a => `
+    <li>
+      <span class="anexo-name">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+        <span>${a}</span>
+      </span>
+      <span class="anexo-actions">
+        <button class="link-btn">Visualizar</button>
+        <button class="link-btn">Descargar</button>
+      </span>
+    </li>`).join('');
+
+  const aprobada = r.decision === 'Aprobada';
+  const chip = `<span class="chip-decision ${aprobada ? 'is-aprobada' : 'is-rechazada'}">${r.decision}</span>`;
+  let extra = `<div class="modal-sub">Decisión</div><div class="field-block">${chip}</div>`;
+
+  if(aprobada && r.resolucion){
+    extra += `
+      <div class="modal-sub">Resolución</div>
+      <ul class="anexos">
+        <li>
+          <span class="anexo-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+            <span>${r.resolucion}</span>
+          </span>
+          <span class="anexo-actions">
+            <button class="link-btn" type="button">Visualizar</button>
+            <button class="link-btn" type="button" data-descargar-resolucion>Descargar</button>
+          </span>
+        </li>
+      </ul>`;
+  } else if(aprobada){
+    extra += `<p class="dialog-note">Este proceso no genera un documento de resolución descargable.</p>`;
+  } else {
+    extra += `
+      <div class="modal-sub">Motivo del rechazo</div>
+      <div class="just">${r.observacion || 'No se registró una observación.'}</div>`;
+  }
+
+  document.getElementById('mRespuestaExtra').innerHTML = extra;
+  document.getElementById('mNote').textContent = 'El trámite ya fue cerrado. El detalle es de solo lectura.';
+  document.getElementById('mFoot').innerHTML = `<button class="btn btn-ghost" data-close>Cerrar</button>`;
+
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('mClose').focus();
+}
+
+/* ---------- Navegación entre secciones ---------- */
+const VIEWS = {usuario:'Mi usuario', solicitudes:'Solicitudes', respuestas:'Respuestas'};
+function irA(v){
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('is-active', b.dataset.view === v));
+  Object.keys(VIEWS).forEach(k => document.getElementById('view-'+k).hidden = (k !== v));
+  document.getElementById('crumbView').textContent = VIEWS[v];
+  document.getElementById('sectionTab').textContent = VIEWS[v];
+}
+
+/* ---------- Eventos ---------- */
+document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => irA(b.dataset.view)));
+['fProceso','fEstado'].forEach(id => document.getElementById(id).addEventListener('change', () => { page=1; render(); }));
+document.getElementById('fDoc').addEventListener('input', () => { page=1; render(); });
+
+function limpiar(){
+  document.getElementById('fProceso').value = '';
+  document.getElementById('fEstado').value  = '';
+  document.getElementById('fDoc').value     = '';
+  page = 1; render();
+}
+document.getElementById('btnClear').addEventListener('click', limpiar);
+document.getElementById('emptyClear').addEventListener('click', limpiar);
+
+document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.sort;
+  sortDir = (sortKey === k && sortDir === 'asc') ? 'desc' : (sortKey === k ? 'asc' : 'asc');
+  sortKey = k; render();
+}));
+
+document.getElementById('tbody').addEventListener('click', e => {
+  const b = e.target.closest('.btn-eye');
+  if(b) abrirDetalle(b.dataset.rad);
+});
+document.getElementById('pager').addEventListener('click', e => {
+  const b = e.target.closest('button[data-go]');
+  if(b && !b.disabled){ page = Number(b.dataset.go); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+});
+
+document.getElementById('mClose').addEventListener('click', cerrarDetalle);
+backdrop.addEventListener('click', e => {
+  if(e.target === backdrop || e.target.hasAttribute('data-close')) cerrarDetalle();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && backdrop.classList.contains('open')) cerrarDetalle();
+});
+
+document.getElementById('mFoot').addEventListener('click', e => {
+  const bRechazar = e.target.closest('[data-accion="rechazar"]');
+  const bRemitir  = e.target.closest('[data-accion="remitir"]');
+  const bResponder = e.target.closest('[data-accion="responder"]');
+  const bAprobarComp = e.target.closest('[data-accion="aprobarComprobante"]');
+  const bRechazarComp = e.target.closest('[data-accion="rechazarComprobante"]');
+  if(bRechazar){ cerrarDetalle(); abrirRechazo(bRechazar.dataset.rad); }
+  if(bRemitir){ cerrarDetalle(); abrirRemision(bRemitir.dataset.rad); }
+  if(bResponder){ cerrarDetalle(); abrirRespuesta(bResponder.dataset.rad); }
+  if(bAprobarComp){ cerrarDetalle(); abrirAprobarComprobante(bAprobarComp.dataset.rad); }
+  if(bRechazarComp){ cerrarDetalle(); abrirRechazarComprobante(bRechazarComp.dataset.rad); }
+});
+
+/* ---------- Diálogos de acción: Rechazar solicitud / Remitir al Decano ---------- */
+const backdropAccion = document.getElementById('backdropAccion');
+let accionRad = null, accionModo = null, resModo = 'adjuntar', resArchivo = null, accionLastFocus = null;
+
+function llenarDatosEstudiante(r){
+  document.getElementById('aEst').textContent  = r.est;
+  document.getElementById('aDoc').textContent  = r.doc;
+  document.getElementById('aProc').textContent = r.proc;
+  document.getElementById('aRad').textContent  = r.rad;
+}
+
+function abrirBackdropAccion(){
+  backdropAccion.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('aClose').focus();
+}
+function cerrarAccion(){
+  backdropAccion.classList.remove('open');
+  document.body.style.overflow = '';
+  if(accionLastFocus) accionLastFocus.focus();
+}
+
+function abrirRechazo(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  accionRad = rad; accionModo = 'rechazar';
+  accionLastFocus = document.activeElement;
+
+  document.getElementById('aTitle').textContent = 'Rechazar solicitud';
+  llenarDatosEstudiante(r);
+
+  document.getElementById('aCentro').innerHTML = `
+    <div class="field-block">
+      <label for="aObs">Observaciones <span class="req">*</span></label>
+      <textarea id="aObs" rows="4" placeholder="Describe el motivo del rechazo de la solicitud..."></textarea>
+      <p class="field-error" id="aObsError" hidden>Debes registrar una observación con el motivo del rechazo.</p>
+    </div>
+    <p class="dialog-note">Si el Estudiante desea volver a solicitar este trámite, deberá radicar una solicitud completamente nueva.</p>`;
+
+  document.getElementById('aFoot').innerHTML = `
+    <button class="btn btn-ghost" data-close>Cancelar</button>
+    <button class="btn btn-danger" id="aConfirmar">Rechazar solicitud</button>`;
+
+  abrirBackdropAccion();
+}
+
+function abrirRemision(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  accionRad = rad; accionModo = 'remitir';
+  resModo = 'adjuntar'; resArchivo = null;
+  accionLastFocus = document.activeElement;
+
+  document.getElementById('aTitle').textContent = 'Remitir al Decano';
+  llenarDatosEstudiante(r);
+
+  const esSupletorio = r.proc === PROC.ES;
+  if(esSupletorio){
+    document.getElementById('aCentro').innerHTML = `
+      <p class="dialog-note">Esta solicitud será remitida al Decano para su decisión.</p>`;
+  } else {
+    document.getElementById('aCentro').innerHTML = `
+      <div class="field-block">
+        <label>Resolución <span class="req">*</span></label>
+        <div class="segmented" id="aSeg">
+          <button type="button" class="seg-btn is-active" data-modo="adjuntar">Adjuntar documento</button>
+          <button type="button" class="seg-btn" data-modo="generar">Generar resolución</button>
+        </div>
+        <div id="aResContenido"></div>
+        <p class="field-error" id="aResError" hidden>Debes adjuntar el documento de resolución o generarla antes de continuar.</p>
+      </div>`;
+    renderResContenido();
+    document.getElementById('aSeg').addEventListener('click', e => {
+      const b = e.target.closest('.seg-btn');
+      if(!b) return;
+      resModo = b.dataset.modo;
+      document.querySelectorAll('#aSeg .seg-btn').forEach(x => x.classList.toggle('is-active', x === b));
+      renderResContenido();
+    });
+  }
+
+  document.getElementById('aFoot').innerHTML = `
+    <button class="btn btn-ghost" data-close>Cancelar</button>
+    <button class="btn btn-primary" id="aConfirmar">Remitir al Decano</button>`;
+
+  abrirBackdropAccion();
+}
+
+function renderResContenido(){
+  const cont = document.getElementById('aResContenido');
+  if(!cont) return;
+  if(resModo === 'adjuntar'){
+    cont.innerHTML = `
+      <label class="upload-zone" for="aFile">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6E7480" stroke-width="1.5"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <span>Arrastra el archivo aquí o <b>selecciona un PDF</b></span>
+        <input type="file" id="aFile" accept="application/pdf" hidden>
+      </label>
+      <p class="upload-filename" id="aFileName" ${resArchivo ? '' : 'hidden'}>${resArchivo || ''}</p>`;
+    document.getElementById('aFile').addEventListener('change', e => {
+      const f = e.target.files[0];
+      resArchivo = f ? f.name : null;
+      const fn = document.getElementById('aFileName');
+      fn.textContent = resArchivo || '';
+      fn.hidden = !resArchivo;
+    });
+  } else {
+    cont.innerHTML = `
+      <div class="gen-form">
+        <div class="field"><label for="gNum">Número de resolución</label><input id="gNum" type="text" placeholder="Ej. 0148-2026"></div>
+        <div class="field"><label for="gFecha">Fecha de expedición</label><input id="gFecha" type="date"></div>
+        <div class="field field-full"><label for="gTexto">Contenido de la resolución</label><textarea id="gTexto" rows="4" placeholder="Redacta el contenido de la resolución..."></textarea></div>
+      </div>`;
+  }
+}
+
+function abrirRespuesta(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  accionRad = rad; accionModo = 'responder';
+  accionLastFocus = document.activeElement;
+
+  document.getElementById('aTitle').textContent = 'Enviar respuesta al Estudiante';
+  llenarDatosEstudiante(r);
+
+  const aprobada = r.decisionDecano === 'Aprobada';
+  const chip = `<span class="chip-decision ${aprobada ? 'is-aprobada' : 'is-rechazada'}">${r.decisionDecano}</span>`;
+
+  let centro = `
+    <div class="field-block">
+      <label>Decisión del Decano</label>
+      ${chip}
+    </div>`;
+
+  if(aprobada){
+    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada, se adjunta copia de la resolución.`;
+    centro += `
+      <div class="field-block">
+        <label for="aMensaje">Mensaje para el Estudiante</label>
+        <textarea id="aMensaje" rows="3">${mensaje}</textarea>
+      </div>
+      <div class="modal-sub">Resolución firmada por el Decano</div>
+      <ul class="anexos">
+        <li>
+          <span class="anexo-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+            <span>${r.resolucion}</span>
+          </span>
+          <span class="anexo-actions">
+            <button class="link-btn" type="button">Visualizar</button>
+            <button class="link-btn" type="button">Descargar</button>
+          </span>
+        </li>
+      </ul>
+      <p class="dialog-note">Esta resolución quedará adjunta automáticamente a la respuesta que se enviará al Estudiante. Al confirmar, se guardará también una copia en las carpetas de DARCA y DECANATURA.</p>`;
+  } else {
+    centro += `
+      <div class="field-block">
+        <label for="aObsResp">Observación del rechazo <span class="req">*</span></label>
+        <textarea id="aObsResp" rows="4" placeholder="Registra el motivo del rechazo que se comunicará al Estudiante..."></textarea>
+        <p class="field-error" id="aObsRespError" hidden>Debes registrar la observación con el motivo del rechazo antes de enviar la respuesta.</p>
+      </div>`;
+  }
+
+  document.getElementById('aCentro').innerHTML = centro;
+
+  document.getElementById('aFoot').innerHTML = `
+    <button class="btn btn-ghost" data-close>Cancelar</button>
+    <button class="btn btn-primary" id="aConfirmar">Enviar respuesta al Estudiante</button>`;
+
+  abrirBackdropAccion();
+}
+
+function abrirAprobarComprobante(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  accionRad = rad; accionModo = 'aprobarComprobante';
+  accionLastFocus = document.activeElement;
+
+  document.getElementById('aTitle').textContent = 'Aprobar comprobante';
+  llenarDatosEstudiante(r);
+
+  document.getElementById('aCentro').innerHTML = `
+    <div class="modal-sub">Comprobante de pago</div>
+    <ul class="anexos">
+      <li>
+        <span class="anexo-name">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+          <span>${r.comprobante}</span>
+        </span>
+        <span class="anexo-actions">
+          <button class="link-btn" type="button">Visualizar</button>
+          <button class="link-btn" type="button">Descargar</button>
+        </span>
+      </li>
+    </ul>
+    <p class="dialog-note">El comprobante de pago quedará validado y la solicitud se cerrará como aprobada. Se notificará al Estudiante.</p>`;
+
+  document.getElementById('aFoot').innerHTML = `
+    <button class="btn btn-ghost" data-close>Cancelar</button>
+    <button class="btn btn-primary" id="aConfirmar">Aprobar comprobante</button>`;
+
+  abrirBackdropAccion();
+}
+
+function abrirRechazarComprobante(rad){
+  const r = DATA.find(x => x.rad === rad);
+  if(!r) return;
+  accionRad = rad; accionModo = 'rechazarComprobante';
+  accionLastFocus = document.activeElement;
+
+  document.getElementById('aTitle').textContent = 'Rechazar comprobante';
+  llenarDatosEstudiante(r);
+
+  document.getElementById('aCentro').innerHTML = `
+    <div class="field-block">
+      <label for="aObsComp">Observaciones <span class="req">*</span></label>
+      <textarea id="aObsComp" rows="4" placeholder="Describe el motivo del rechazo del comprobante..."></textarea>
+      <p class="field-error" id="aObsCompError" hidden>Debes registrar una observación con el motivo del rechazo.</p>
+    </div>
+    <p class="dialog-note">El Estudiante será notificado del rechazo del comprobante y deberá radicar una solicitud completamente nueva si desea reintentar.</p>`;
+
+  document.getElementById('aFoot').innerHTML = `
+    <button class="btn btn-ghost" data-close>Cancelar</button>
+    <button class="btn btn-danger" id="aConfirmar">Rechazar comprobante</button>`;
+
+  abrirBackdropAccion();
+}
+
+let toastTimer = null;
+function mostrarToast(html){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastIcon').innerHTML =
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 12.5l4.5 4.5L20 6"/></svg>';
+  document.getElementById('toastText').innerHTML = html;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 5500);
+}
+
+function confirmarAccion(){
+  const r = DATA.find(x => x.rad === accionRad);
+  if(!r) return;
+
+  if(accionModo === 'rechazar'){
+    const campo = document.getElementById('aObs');
+    const obs = campo.value.trim();
+    const err = document.getElementById('aObsError');
+    if(!obs){
+      err.hidden = false;
+      campo.classList.add('is-invalid');
+      return;
+    }
+    err.hidden = true;
+    campo.classList.remove('is-invalid');
+    r.decision = 'Rechazada';
+    r.observacion = obs;
+    r.estado = 'Respondida';
+    cerrarAccion();
+    render();
+    renderRespuestas();
+    mostrarToast('<b>Solicitud rechazada.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
+    return;
+  }
+
+  if(accionModo === 'remitir'){
+    if(r.proc !== PROC.ES){
+      const err = document.getElementById('aResError');
+      const generoOk = resModo === 'generar' &&
+        document.getElementById('gNum').value.trim() &&
+        document.getElementById('gTexto').value.trim();
+      const adjuntoOk = resModo === 'adjuntar' && !!resArchivo;
+      if(!adjuntoOk && !generoOk){
+        err.hidden = false;
+        return;
+      }
+      err.hidden = true;
+    }
+    r.estado = 'En Gestión';
+    r.esperaDe = 'Decano';
+    cerrarAccion();
+    render();
+    return;
+  }
+
+  if(accionModo === 'responder'){
+    const aprobada = r.decisionDecano === 'Aprobada';
+    if(!aprobada){
+      const campo = document.getElementById('aObsResp');
+      const obs = campo.value.trim();
+      const err = document.getElementById('aObsRespError');
+      if(!obs){
+        err.hidden = false;
+        campo.classList.add('is-invalid');
+        return;
+      }
+      err.hidden = true;
+      campo.classList.remove('is-invalid');
+      r.observacion = obs;
+    } else {
+      r.mensajeRespuesta = document.getElementById('aMensaje').value.trim();
+    }
+    r.decision = r.decisionDecano;
+    r.estado = 'Respondida';
+    cerrarAccion();
+    render();
+    renderRespuestas();
+    if(aprobada){
+      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Copia de la resolución guardada en las carpetas <b>DARCA</b> y <b>DECANATURA</b>.');
+    } else {
+      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Se notificó el rechazo de la solicitud y el trámite quedó cerrado.');
+    }
+    return;
+  }
+
+  if(accionModo === 'aprobarComprobante'){
+    r.decision = 'Aprobada';
+    r.estado = 'Respondida';
+    cerrarAccion();
+    render();
+    renderRespuestas();
+    mostrarToast('<b>Comprobante aprobado.</b><br>La solicitud quedó cerrada como aprobada y se notificó al Estudiante.');
+    return;
+  }
+
+  if(accionModo === 'rechazarComprobante'){
+    const campo = document.getElementById('aObsComp');
+    const obs = campo.value.trim();
+    const err = document.getElementById('aObsCompError');
+    if(!obs){
+      err.hidden = false;
+      campo.classList.add('is-invalid');
+      return;
+    }
+    err.hidden = true;
+    campo.classList.remove('is-invalid');
+    r.decision = 'Rechazada';
+    r.observacion = obs;
+    r.estado = 'Respondida';
+    cerrarAccion();
+    render();
+    renderRespuestas();
+    mostrarToast('<b>Comprobante rechazado.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
+  }
+}
+
+document.getElementById('aFoot').addEventListener('click', e => {
+  if(e.target.hasAttribute('data-close')){ cerrarAccion(); return; }
+  if(e.target.id === 'aConfirmar') confirmarAccion();
+});
+document.getElementById('aClose').addEventListener('click', cerrarAccion);
+backdropAccion.addEventListener('click', e => {
+  if(e.target === backdropAccion) cerrarAccion();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && backdropAccion.classList.contains('open')) cerrarAccion();
+});
+
+/* ---------- Menú de usuario / Cerrar sesión ---------- */
+const userMenuBtn = document.getElementById('userMenuBtn');
+const userDropdown = document.getElementById('userDropdown');
+
+function abrirMenuUsuario(){
+  userDropdown.hidden = false;
+  userMenuBtn.setAttribute('aria-expanded', 'true');
+}
+function cerrarMenuUsuario(){
+  userDropdown.hidden = true;
+  userMenuBtn.setAttribute('aria-expanded', 'false');
+}
+userMenuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  userDropdown.hidden ? abrirMenuUsuario() : cerrarMenuUsuario();
+});
+document.addEventListener('click', e => {
+  if(!userDropdown.hidden && !e.target.closest('.user-chip')) cerrarMenuUsuario();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && !userDropdown.hidden){ cerrarMenuUsuario(); userMenuBtn.focus(); }
+});
+document.getElementById('btnLogout').addEventListener('click', () => {
+  cerrarMenuUsuario();
+  mostrarToast('<b>Sesión cerrada.</b><br>Has salido de Gestión de Procesos Académicos FIET.');
+});
+
+render();
+renderRespuestas();
+irA('usuario');
+</script>
+</body>
+</html>
