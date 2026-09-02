@@ -309,7 +309,7 @@
   .back-btn:focus-visible{outline:2px solid #B9C7EE;outline-offset:1px;}
 
   .page-header{
-    max-width:1020px;margin:0 auto 20px;display:flex;justify-content:space-between;
+    max-width:1200px;margin:0 auto 20px;display:flex;justify-content:space-between;
     align-items:flex-start;gap:20px;flex-wrap:wrap;
   }
   .ph-left h1{margin:0 0 6px;font-size:19px;font-weight:700;color:var(--navy-ink);}
@@ -317,7 +317,7 @@
   .ph-meta b{color:var(--text);font-weight:600;}
   .ph-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .acciones-bar{
-    max-width:1020px;margin:0 auto 20px;display:flex;justify-content:flex-start;
+    max-width:1200px;margin:0 auto 20px;display:flex;justify-content:flex-start;
     align-items:center;gap:10px;flex-wrap:wrap;
   }
 
@@ -330,7 +330,7 @@
   .estado-chip-lg.st-respuesta{background:#E7EBFB;color:var(--navy-700);}
   .estado-chip-lg.st-respondida{background:#E5F5EE;color:var(--green);}
 
-  .timeline-wrap{max-width:1020px;margin:0 auto 18px;}
+  .timeline-wrap{max-width:1200px;margin:0 auto 18px;}
 
   .timeline{
     list-style:none;margin:0;padding:6px 4px 0;display:flex;align-items:flex-start;
@@ -369,9 +369,10 @@
   .layout-detalle .card-body{padding-bottom:18px;}
   .timeline-wrap .card-body{padding-bottom:16px;}
   .layout-detalle{
-    max-width:1020px;margin:0 auto;display:grid;grid-template-columns:1fr 300px;
+    max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 300px;
     gap:20px;align-items:start;
   }
+  .layout-detalle.sin-sidebar{grid-template-columns:1fr;}
   .layout-detalle .card{margin:0 0 18px;max-width:none;}
 
   .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 20px;}
@@ -778,7 +779,7 @@
           </div>
         </div>
 
-        <div class="layout-detalle">
+        <div class="layout-detalle" id="dLayout">
           <div class="main">
 
             <div class="card">
@@ -1414,6 +1415,7 @@ function abrirDetallePagina(rad, origen){
   document.getElementById('dAccionesFinales').innerHTML = accionesFinales;
 
   document.getElementById('dSidebar').innerHTML = sidebarHTML;
+  document.getElementById('dLayout').classList.toggle('sin-sidebar', !sidebarHTML.trim());
 
   irADetalle();
 }
