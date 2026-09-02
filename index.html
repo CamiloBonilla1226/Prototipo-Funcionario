@@ -1256,7 +1256,7 @@ document.getElementById('mFoot').addEventListener('click', e => {
 
 /* ---------- Diálogos de acción: Rechazar solicitud / Remitir al Decano ---------- */
 const backdropAccion = document.getElementById('backdropAccion');
-let accionRad = null, accionModo = null, resModo = 'adjuntar', resArchivo = null, accionLastFocus = null;
+let accionRad = null, accionModo = null, accionLastFocus = null;
 
 function llenarDatosEstudiante(r){
   document.getElementById('aEst').textContent  = r.est;
@@ -1304,70 +1304,21 @@ function abrirRemision(rad){
   const r = DATA.find(x => x.rad === rad);
   if(!r) return;
   accionRad = rad; accionModo = 'remitir';
-  resModo = 'adjuntar'; resArchivo = null;
   accionLastFocus = document.activeElement;
 
   document.getElementById('aTitle').textContent = 'Remitir al Decano';
   llenarDatosEstudiante(r);
 
   const esSupletorio = r.proc === PROC.ES;
-  if(esSupletorio){
-    document.getElementById('aCentro').innerHTML = `
-      <p class="dialog-note">Esta solicitud será remitida al Decano para su decisión.</p>`;
-  } else {
-    document.getElementById('aCentro').innerHTML = `
-      <div class="field-block">
-        <label>Resolución <span class="req">*</span></label>
-        <div class="segmented" id="aSeg">
-          <button type="button" class="seg-btn is-active" data-modo="adjuntar">Adjuntar documento</button>
-          <button type="button" class="seg-btn" data-modo="generar">Generar resolución</button>
-        </div>
-        <div id="aResContenido"></div>
-        <p class="field-error" id="aResError" hidden>Debes adjuntar el documento de resolución o generarla antes de continuar.</p>
-      </div>`;
-    renderResContenido();
-    document.getElementById('aSeg').addEventListener('click', e => {
-      const b = e.target.closest('.seg-btn');
-      if(!b) return;
-      resModo = b.dataset.modo;
-      document.querySelectorAll('#aSeg .seg-btn').forEach(x => x.classList.toggle('is-active', x === b));
-      renderResContenido();
-    });
-  }
+  document.getElementById('aCentro').innerHTML = esSupletorio
+    ? `<p class="dialog-note">Esta solicitud será remitida al Decano para su decisión.</p>`
+    : `<p class="dialog-note">Esta solicitud será remitida al Decano para su decisión. La Resolución no existe todavía en este punto del trámite: se redacta e imprime únicamente después de que el Decano decida, y debe ser firmada físicamente por él.</p>`;
 
   document.getElementById('aFoot').innerHTML = `
     <button class="btn btn-ghost" data-close>Cancelar</button>
     <button class="btn btn-primary" id="aConfirmar">Remitir al Decano</button>`;
 
   abrirBackdropAccion();
-}
-
-function renderResContenido(){
-  const cont = document.getElementById('aResContenido');
-  if(!cont) return;
-  if(resModo === 'adjuntar'){
-    cont.innerHTML = `
-      <label class="upload-zone" for="aFile">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6E7480" stroke-width="1.5"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-        <span>Arrastra el archivo aquí o <b>selecciona un PDF</b></span>
-        <input type="file" id="aFile" accept="application/pdf" hidden>
-      </label>
-      <p class="upload-filename" id="aFileName" ${resArchivo ? '' : 'hidden'}>${resArchivo || ''}</p>`;
-    document.getElementById('aFile').addEventListener('change', e => {
-      const f = e.target.files[0];
-      resArchivo = f ? f.name : null;
-      const fn = document.getElementById('aFileName');
-      fn.textContent = resArchivo || '';
-      fn.hidden = !resArchivo;
-    });
-  } else {
-    cont.innerHTML = `
-      <div class="gen-form">
-        <div class="field"><label for="gNum">Número de resolución</label><input id="gNum" type="text" placeholder="Ej. 0148-2026"></div>
-        <div class="field"><label for="gFecha">Fecha de expedición</label><input id="gFecha" type="date"></div>
-        <div class="field field-full"><label for="gTexto">Contenido de la resolución</label><textarea id="gTexto" rows="4" placeholder="Redacta el contenido de la resolución..."></textarea></div>
-      </div>`;
-  }
 }
 
 function abrirRespuesta(rad){
@@ -1389,26 +1340,13 @@ function abrirRespuesta(rad){
     </div>`;
 
   if(aprobada){
-    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada, se adjunta copia de la resolución.`;
+    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada. Debe acercarse a la Decanatura a firmar la Resolución dentro de los cinco (5) días siguientes a esta notificación.`;
     centro += `
       <div class="field-block">
         <label for="aMensaje">Mensaje para el Estudiante</label>
         <textarea id="aMensaje" rows="3">${mensaje}</textarea>
       </div>
-      <div class="modal-sub">Resolución firmada por el Decano</div>
-      <ul class="anexos">
-        <li>
-          <span class="anexo-name">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
-            <span>${r.resolucion}</span>
-          </span>
-          <span class="anexo-actions">
-            <button class="link-btn" type="button">Visualizar</button>
-            <button class="link-btn" type="button">Descargar</button>
-          </span>
-        </li>
-      </ul>
-      <p class="dialog-note">Esta resolución quedará adjunta automáticamente a la respuesta que se enviará al Estudiante. Al confirmar, se guardará también una copia en las carpetas de DARCA y DECANATURA.</p>`;
+      <p class="dialog-note">La Resolución se firma físicamente en la Decanatura; no se adjunta ni se genera ningún archivo digital en esta respuesta.</p>`;
   } else {
     centro += `
       <div class="field-block">
@@ -1520,18 +1458,6 @@ function confirmarAccion(){
   }
 
   if(accionModo === 'remitir'){
-    if(r.proc !== PROC.ES){
-      const err = document.getElementById('aResError');
-      const generoOk = resModo === 'generar' &&
-        document.getElementById('gNum').value.trim() &&
-        document.getElementById('gTexto').value.trim();
-      const adjuntoOk = resModo === 'adjuntar' && !!resArchivo;
-      if(!adjuntoOk && !generoOk){
-        err.hidden = false;
-        return;
-      }
-      err.hidden = true;
-    }
     r.estado = 'En Gestión';
     r.esperaDe = 'Decano';
     cerrarAccion();
