@@ -410,6 +410,7 @@
     width:100%;border:1px solid var(--line);border-radius:3px;padding:5px 6px;
     font-size:12.3px;font-family:inherit;color:var(--text);background:#fff;
   }
+  .mini-table input.mini-input{text-align:center;}
   .mini-table input.mini-input:focus,.mini-table select.mini-select:focus{
     outline:2px solid #B9C7EE;outline-offset:0;border-color:var(--navy-700);
   }
@@ -1300,8 +1301,12 @@ function textoSituacion(v){
   return o ? o.t : '—';
 }
 function opcionesSituacionHTML(actual){
-  return '<option value="">—</option>' + OPCIONES_SITUACION.map(o =>
-    `<option value="${o.v}" ${o.v === actual ? 'selected' : ''}>${o.t}</option>`).join('');
+  const vacio = `<option value="" data-full="—" data-short="—">—</option>`;
+  const opts = OPCIONES_SITUACION.map(o => {
+    const esActual = o.v === actual;
+    return `<option value="${o.v}" data-full="${o.t}" data-short="${o.v}" ${esActual ? 'selected' : ''}>${esActual ? o.v : o.t}</option>`;
+  }).join('');
+  return vacio + opts;
 }
 
 function renderTablaAsignaturas(r, editable){
@@ -1336,8 +1341,8 @@ function renderTablaAsignaturas(r, editable){
       </colgroup>
       <thead>
         <tr>
-          <th class="txt-left" rowspan="3">Código</th>
-          <th class="txt-left" rowspan="3">Asignatura</th>
+          <th rowspan="3">Código</th>
+          <th rowspan="3">Asignatura</th>
           <th colspan="4">Espacio a diligenciar por la Facultad a la que pertenece el estudiante</th>
         </tr>
         <tr>
@@ -1626,6 +1631,17 @@ document.getElementById('view-detalle').addEventListener('input', e => {
   if(!fila) return;
   fila[campo.dataset.field] = campo.value;
 });
+document.getElementById('view-detalle').addEventListener('focus', e => {
+  const sel = e.target.closest('select.mini-select');
+  if(!sel) return;
+  Array.from(sel.options).forEach(o => { if(o.dataset.full != null) o.textContent = o.dataset.full; });
+}, true);
+document.getElementById('view-detalle').addEventListener('blur', e => {
+  const sel = e.target.closest('select.mini-select');
+  if(!sel) return;
+  const opt = sel.options[sel.selectedIndex];
+  if(opt && opt.dataset.short != null) opt.textContent = opt.dataset.short;
+}, true);
 
 /* ---------- Diálogos de acción: Rechazar solicitud / Remitir al Decano ---------- */
 const backdropAccion = document.getElementById('backdropAccion');
