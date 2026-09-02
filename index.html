@@ -1475,21 +1475,7 @@ function abrirDetallePagina(rad, origen){
   let sidebarHTML = '';
   if(origen === 'respuestas'){
     const aprobada = r.decision === 'Aprobada';
-    sidebarHTML += `
-      <div class="card">
-        <div class="card-head"><h2>Decisión</h2></div>
-        <div class="card-body"><span class="chip-decision ${aprobada ? 'is-aprobada' : 'is-rechazada'}">${r.decision}</span></div>
-      </div>`;
-    if(aprobada){
-      const notaResolucion = (!esES && r.resolucion)
-        ? `La solicitud fue aprobada mediante la Resolución No. ${String(r.resolucion).replace(/^Resoluci[oó]n\s*/i,'').replace(/\.pdf$/i,'')}. Por reglamento, este documento no se firma ni se entrega de forma digital: el original quedó firmado físicamente por el Decano y entregado al Estudiante; las copias quedaron archivadas en Decanatura y en DARCA.`
-        : `Este proceso no genera Resolución. La decisión se comunicó directamente al Estudiante.`;
-      sidebarHTML += `
-        <div class="card">
-          <div class="card-head"><h2>Resolución</h2></div>
-          <div class="card-body"><div class="resolucion-note">${notaResolucion}</div></div>
-        </div>`;
-    } else {
+    if(!aprobada){
       sidebarHTML += `
         <div class="card">
           <div class="card-head"><h2>Motivo del rechazo</h2></div>
