@@ -314,6 +314,10 @@
   .ph-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);}
   .ph-meta b{color:var(--text);font-weight:600;}
   .ph-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .acciones-bar{
+    max-width:1020px;margin:0 auto 20px;display:flex;justify-content:flex-end;
+    align-items:center;gap:10px;flex-wrap:wrap;
+  }
 
   .estado-chip-lg{
     display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;
@@ -759,8 +763,9 @@
             <h1 id="dTitulo">Solicitud</h1>
             <div class="ph-meta" id="dMeta"></div>
           </div>
-          <div class="ph-right" id="dAcciones"></div>
         </div>
+
+        <div class="acciones-bar" id="dAcciones"></div>
 
         <div class="timeline-wrap" hidden>
           <div class="card">
