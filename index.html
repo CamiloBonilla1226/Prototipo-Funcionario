@@ -1543,27 +1543,26 @@ function renderProcesoExtra(r){
   if(r.proc === PROC.ES){
     const esCruce = r.causa === 'cruce';
     let html = `
-      <div class="modal-sub">Datos del examen</div>
-      <dl class="dl">
-        <dt>Asignatura del examen</dt><dd>${r.examen || ''}</dd>
-        <dt>Código de la asignatura</dt><dd>${r.codExamen || ''}</dd>
-        <dt>Grupo</dt><dd>${r.grupo || ''}</dd>
-        <dt>Fecha del examen no presentado</dt><dd>${fmtFechaSolo(r.fechaExamen)}</dd>
-        <dt>Fecha propuesta</dt><dd>${fmtFechaSolo(r.propuesta)}</dd>
-        <dt>Teléfono de contacto</dt><dd>${r.telefono || ''}</dd>
-        <dt>Firma del docente</dt><dd>${r.firmaDocente || ''}</dd>
-        <dt>Tipo de causa</dt><dd>${esCruce ? 'Cruce con otra evaluación' : 'Otra causa'}</dd>
-      </dl>`;
+      <div class="field-grid">
+        <div class="field"><label>Asignatura</label><div class="value">${r.examen || '—'}</div></div>
+        <div class="field"><label>Código de la asignatura</label><div class="value">${r.codExamen || '—'}</div></div>
+        <div class="field"><label>Grupo</label><div class="value">${r.grupo || '—'}</div></div>
+        <div class="field"><label>Fecha del examen no presentado</label><div class="value">${fmtFechaSolo(r.fechaExamen) || '—'}</div></div>
+        <div class="field"><label>Fecha acordada para el examen</label><div class="value">${fmtFechaSolo(r.propuesta) || '—'}</div></div>
+        <div class="field"><label>Teléfono de contacto</label><div class="value">${r.telefono || '—'}</div></div>
+        <div class="field"><label>Firma del docente que orienta la asignatura</label><div class="value">${r.firmaDocente || '—'}</div></div>
+        <div class="field"><label>Tipo de causa</label><div class="value">${esCruce ? 'Cruce con otra evaluación' : 'Otra causa'}</div></div>
+      </div>`;
     if(esCruce && r.cruce){
       html += `
       <div class="modal-sub">Datos del cruce</div>
-      <dl class="dl">
-        <dt>Asignatura en cruce</dt><dd>${r.cruce.asignatura || ''}</dd>
-        <dt>Código</dt><dd>${r.cruce.codigo || ''}</dd>
-        <dt>Fecha</dt><dd>${fmtFechaSolo(r.cruce.fecha)}</dd>
-        <dt>Hora</dt><dd>${r.cruce.hora || ''}</dd>
-        <dt>Firma del docente</dt><dd>${r.cruce.firmaDocente || ''}</dd>
-      </dl>`;
+      <div class="field-grid">
+        <div class="field"><label>Asignatura en cruce</label><div class="value">${r.cruce.asignatura || '—'}</div></div>
+        <div class="field"><label>Código</label><div class="value">${r.cruce.codigo || '—'}</div></div>
+        <div class="field"><label>Fecha</label><div class="value">${fmtFechaSolo(r.cruce.fecha) || '—'}</div></div>
+        <div class="field"><label>Hora</label><div class="value">${r.cruce.hora || '—'}</div></div>
+        <div class="field"><label>Firma del docente</label><div class="value">${r.cruce.firmaDocente || '—'}</div></div>
+      </div>`;
     }
     return html;
   }
