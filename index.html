@@ -397,15 +397,25 @@
   .mini-fields .field label{color:var(--muted);}
 
   .mini-table{width:100%;max-width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;font-size:12.8px;}
+  .mini-table th,.mini-table td{border:1px solid var(--line);}
   .mini-table th{
-    text-align:left;padding:8px 10px;background:var(--panel);color:var(--muted);
-    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
-    border-bottom:1px solid var(--line);overflow-wrap:anywhere;white-space:normal;
+    text-align:center;vertical-align:middle;padding:7px 6px;background:var(--panel);color:var(--muted);
+    font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;
+    overflow-wrap:anywhere;white-space:normal;
   }
-  .mini-table td{padding:10px;border-bottom:1px solid var(--line-soft);overflow-wrap:anywhere;}
-  .mini-table tr:last-child td{border-bottom:0;}
-  .mini-table th:first-child,.mini-table td:first-child{width:32%;}
+  .mini-table td{padding:8px;overflow-wrap:anywhere;vertical-align:middle;text-align:center;}
+  .mini-table th.txt-left,.mini-table td.txt-left{text-align:left;}
   .mini-table .muted{color:var(--muted);}
+  .mini-table input.mini-input,.mini-table select.mini-select{
+    width:100%;border:1px solid var(--line);border-radius:3px;padding:5px 6px;
+    font-size:12.3px;font-family:inherit;color:var(--text);background:#fff;
+  }
+  .mini-table input.mini-input:focus,.mini-table select.mini-select:focus{
+    outline:2px solid #B9C7EE;outline-offset:0;border-color:var(--navy-700);
+  }
+  .mini-table input.mini-input:disabled,.mini-table select.mini-select:disabled{
+    background:var(--panel);color:var(--muted);border-color:var(--line-soft);
+  }
 
   .resolucion-note{
     background:#FFF8E9;border:1px solid #F0DEB4;border-radius:5px;
@@ -1278,6 +1288,74 @@ function documentosHTML(lista){
     </li>`).join('');
 }
 
+/* ---------- Situación académica (diligenciada por el Funcionario) ---------- */
+const OPCIONES_SITUACION = [
+  {v:'R0', t:'R0 — Cursa por primera vez'},
+  {v:'R1', t:'R1 — Repite por primera vez'},
+  {v:'R2', t:'R2 — Repite por segunda vez'},
+  {v:'R3', t:'R3 — Repite por tercera vez'},
+  {v:'R4', t:'R4 — Repite por cuarta vez'},
+  {v:'R5', t:'R5 — Repite por quinta vez'}
+];
+function textoSituacion(v){
+  const o = OPCIONES_SITUACION.find(o => o.v === v);
+  return o ? o.t : '—';
+}
+function opcionesSituacionHTML(actual){
+  return '<option value="">—</option>' + OPCIONES_SITUACION.map(o =>
+    `<option value="${o.v}" ${o.v === actual ? 'selected' : ''}>${o.t}</option>`).join('');
+}
+
+function renderTablaAsignaturas(r, editable){
+  const filas = (r.asignaturas || []).map((a, i) => {
+    if(editable){
+      return `
+        <tr>
+          <td class="txt-left">${a.cod}</td>
+          <td class="txt-left">${a.nombre}</td>
+          <td><input type="number" min="0" class="mini-input" data-rad="${r.rad}" data-idx="${i}" data-field="faltas" value="${a.faltas != null ? a.faltas : ''}"></td>
+          <td><input type="text" class="mini-input" data-rad="${r.rad}" data-idx="${i}" data-field="nota" value="${a.nota != null ? a.nota : ''}"></td>
+          <td><select class="mini-select" data-rad="${r.rad}" data-idx="${i}" data-field="sitMatricula">${opcionesSituacionHTML(a.sitMatricula)}</select></td>
+          <td><select class="mini-select" data-rad="${r.rad}" data-idx="${i}" data-field="sitCancelar">${opcionesSituacionHTML(a.sitCancelar)}</select></td>
+        </tr>`;
+    }
+    return `
+        <tr>
+          <td class="txt-left">${a.cod}</td>
+          <td class="txt-left">${a.nombre}</td>
+          <td>${(a.faltas != null && a.faltas !== '') ? a.faltas : '—'}</td>
+          <td>${(a.nota != null && a.nota !== '') ? a.nota : '—'}</td>
+          <td>${textoSituacion(a.sitMatricula)}</td>
+          <td>${textoSituacion(a.sitCancelar)}</td>
+        </tr>`;
+  }).join('');
+
+  return `
+    <table class="mini-table">
+      <colgroup>
+        <col style="width:12%"><col style="width:26%"><col style="width:10%">
+        <col style="width:10%"><col style="width:21%"><col style="width:21%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="txt-left" rowspan="3">Código</th>
+          <th class="txt-left" rowspan="3">Asignatura</th>
+          <th colspan="4">Espacio a diligenciar por la Facultad a la que pertenece el estudiante</th>
+        </tr>
+        <tr>
+          <th rowspan="2">No. Faltas</th>
+          <th rowspan="2">Nota</th>
+          <th colspan="2">Situación Académica de la(s) Asignatura(s)</th>
+        </tr>
+        <tr>
+          <th>En la Matrícula</th>
+          <th>Al Cancelar</th>
+        </tr>
+      </thead>
+      <tbody>${filas}</tbody>
+    </table>`;
+}
+
 function abrirDetallePagina(rad, origen){
   const r = DATA.find(x => x.rad === rad);
   if(!r) return;
@@ -1341,13 +1419,9 @@ function abrirDetallePagina(rad, origen){
   const dPazCard = document.getElementById('dPazCard');
   if(plantillaSimple){
     document.getElementById('dProcesoTitulo').textContent = esCM ? 'Asignaturas matriculadas' : 'Asignaturas a cancelar';
-    const filasAsig = (r.asignaturas || []).map(a => `<tr><td>${a.cod}</td><td>${a.nombre}</td></tr>`).join('');
+    const editableAsig = origen === 'solicitudes' && r.estado === 'Pendiente';
     document.getElementById('dProcesoCard').hidden = false;
-    document.getElementById('dProcesoExtra').innerHTML = `
-      <table class="mini-table">
-        <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
-        <tbody>${filasAsig}</tbody>
-      </table>`;
+    document.getElementById('dProcesoExtra').innerHTML = renderTablaAsignaturas(r, editableAsig);
 
     if(esCM){
       dPazCard.hidden = false;
@@ -1544,6 +1618,15 @@ document.getElementById('view-detalle').addEventListener('click', e => {
   if(bResponder) abrirRespuesta(bResponder.dataset.rad);
   if(bAprobarComp) abrirAprobarComprobante(bAprobarComp.dataset.rad);
   if(bRechazarComp) abrirRechazarComprobante(bRechazarComp.dataset.rad);
+});
+document.getElementById('view-detalle').addEventListener('input', e => {
+  const campo = e.target.closest('.mini-input, .mini-select');
+  if(!campo) return;
+  const r = DATA.find(x => x.rad === campo.dataset.rad);
+  if(!r || !r.asignaturas) return;
+  const fila = r.asignaturas[Number(campo.dataset.idx)];
+  if(!fila) return;
+  fila[campo.dataset.field] = campo.value;
 });
 
 /* ---------- Diálogos de acción: Rechazar solicitud / Remitir al Decano ---------- */
