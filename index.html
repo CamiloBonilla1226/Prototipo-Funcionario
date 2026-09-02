@@ -761,7 +761,7 @@
           <div class="ph-right" id="dAcciones"></div>
         </div>
 
-        <div class="timeline-wrap">
+        <div class="timeline-wrap" hidden>
           <div class="card">
             <div class="card-head"><h2>Línea de tiempo del trámite</h2></div>
             <div class="card-body">
@@ -1327,10 +1327,12 @@ function abrirDetallePagina(rad, origen){
     const filasAsig = (r.asignaturas || []).map(a => `<tr><td>${a.cod}</td><td>${a.nombre}</td></tr>`).join('');
     document.getElementById('dProcesoCard').hidden = false;
     document.getElementById('dProcesoExtra').innerHTML = `
-      <table class="mini-table">
-        <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
-        <tbody>${filasAsig}</tbody>
-      </table>`;
+      <div class="table-scroll">
+        <table class="mini-table">
+          <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
+          <tbody>${filasAsig}</tbody>
+        </table>
+      </div>`;
 
     dPazCard.hidden = false;
     document.getElementById('dPazSalvos').innerHTML = `<ul class="anexos">${documentosHTML(r.pazYSalvos)}</ul>`;
