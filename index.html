@@ -1251,6 +1251,20 @@ function anexosHTML(lista){
     </li>`).join('');
 }
 
+function documentosHTML(lista){
+  return (lista || []).map(p => `
+    <li>
+      <span class="anexo-name">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D0463B" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+        <span><strong>${p.entidad}:</strong> ${p.archivo}</span>
+      </span>
+      <span class="anexo-actions">
+        <button class="link-btn">Visualizar</button>
+        <button class="link-btn">Descargar</button>
+      </span>
+    </li>`).join('');
+}
+
 function abrirDetallePagina(rad, origen){
   const r = DATA.find(x => x.rad === rad);
   if(!r) return;
@@ -1310,13 +1324,16 @@ function abrirDetallePagina(rad, origen){
   const dPazCard = document.getElementById('dPazCard');
   if(esCM){
     document.getElementById('dProcesoTitulo').textContent = 'Asignaturas matriculadas';
-    const asignaturas = (r.asignaturas || []).map(a => `<li>${a.cod} — ${a.nombre}</li>`).join('');
+    const filasAsig = (r.asignaturas || []).map(a => `<tr><td>${a.cod}</td><td>${a.nombre}</td></tr>`).join('');
     document.getElementById('dProcesoCard').hidden = false;
-    document.getElementById('dProcesoExtra').innerHTML = `<ul class="plain-list">${asignaturas}</ul>`;
+    document.getElementById('dProcesoExtra').innerHTML = `
+      <table class="mini-table">
+        <thead><tr><th>Código</th><th>Asignatura</th></tr></thead>
+        <tbody>${filasAsig}</tbody>
+      </table>`;
 
-    const pazYSalvos = (r.pazYSalvos || []).map(p => `<li><strong>${p.entidad}:</strong> ${p.archivo} <small>(expedido ${fmtFechaSolo(p.fecha)})</small></li>`).join('');
     dPazCard.hidden = false;
-    document.getElementById('dPazSalvos').innerHTML = `<ul class="plain-list">${pazYSalvos}</ul>`;
+    document.getElementById('dPazSalvos').innerHTML = `<ul class="anexos">${documentosHTML(r.pazYSalvos)}</ul>`;
   } else {
     document.getElementById('dProcesoTitulo').textContent = 'Datos del proceso';
     const extra = renderProcesoExtra(r);
@@ -1370,14 +1387,6 @@ function abrirDetallePagina(rad, origen){
         </div>`;
     }
   } else {
-    const nota = esES
-      ? 'Este proceso no genera Resolución. La decisión del Decano se comunicará directamente al Estudiante.'
-      : 'La Resolución no existe todavía en este punto del trámite: se redacta e imprime únicamente después de que el Decano decida, y debe ser firmada físicamente por él.';
-    sidebarHTML += `
-      <div class="card">
-        <div class="card-head"><h2>Nota sobre la Resolución</h2></div>
-        <div class="card-body"><div class="resolucion-note">${nota}</div></div>
-      </div>`;
     if(r.observacionesRemision){
       sidebarHTML += `
         <div class="card">
@@ -1541,13 +1550,13 @@ function abrirRechazo(rad){
   document.getElementById('aTitle').textContent = 'Rechazar solicitud';
   llenarDatosEstudiante(r);
 
+  const motivoPredeterminado = 'La solicitud no cumple con los requisitos establecidos. Debe acercarse a la Decanatura a firmar la Resolución.';
   document.getElementById('aCentro').innerHTML = `
     <div class="field-block">
       <label for="aObs">Motivo y justificación del rechazo <span class="req">*</span></label>
-      <textarea id="aObs" rows="4" placeholder="Describe el motivo y la justificación del rechazo de la solicitud..."></textarea>
+      <textarea id="aObs" rows="4" placeholder="Describe el motivo y la justificación del rechazo de la solicitud...">${motivoPredeterminado}</textarea>
       <p class="field-error" id="aObsError" hidden>Debes registrar el motivo y la justificación del rechazo.</p>
-    </div>
-    <p class="dialog-note">Si el Estudiante desea volver a solicitar este trámite, deberá radicar una solicitud completamente nueva.</p>`;
+    </div>`;
 
   document.getElementById('aFoot').innerHTML = `
     <button class="btn btn-ghost" data-close>Cancelar</button>
