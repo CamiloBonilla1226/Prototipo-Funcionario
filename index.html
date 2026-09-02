@@ -1670,7 +1670,9 @@ function abrirRechazo(rad){
   document.getElementById('aTitle').textContent = 'Rechazar solicitud';
   llenarDatosEstudiante(r);
 
-  const motivoPredeterminado = 'La solicitud no cumple con los requisitos establecidos. Debe acercarse a la Decanatura a firmar la Resolución.';
+  const motivoPredeterminado = r.proc === PROC.ES
+    ? 'La solicitud no cumple con los requisitos establecidos.'
+    : 'La solicitud no cumple con los requisitos establecidos. Debe acercarse a la Decanatura a firmar la Resolución.';
   document.getElementById('aCentro').innerHTML = `
     <div class="field-block">
       <label for="aObs">Motivo y justificación del rechazo <span class="req">*</span></label>
@@ -1732,13 +1734,19 @@ function abrirRespuesta(rad){
     </div>`;
 
   if(aprobada){
-    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada. Debe acercarse a la Decanatura a firmar la Resolución dentro de los cinco (5) días siguientes a esta notificación.`;
+    const esSupletorioResp = r.proc === PROC.ES;
+    const mensaje = esSupletorioResp
+      ? `Su solicitud de ${r.proc} ha sido aprobada.`
+      : `Su solicitud de ${r.proc} ha sido aprobada. Debe acercarse a la Decanatura a firmar la Resolución dentro de los cinco (5) días siguientes a esta notificación.`;
+    const notaResp = esSupletorioResp
+      ? `<p class="dialog-note">Este proceso no genera Resolución; la decisión se comunica directamente al Estudiante.</p>`
+      : `<p class="dialog-note">La Resolución se firma físicamente en la Decanatura; no se adjunta ni se genera ningún archivo digital en esta respuesta.</p>`;
     centro += `
       <div class="field-block">
         <label for="aMensaje">Mensaje para el Estudiante</label>
         <textarea id="aMensaje" rows="3">${mensaje}</textarea>
       </div>
-      <p class="dialog-note">La Resolución se firma físicamente en la Decanatura; no se adjunta ni se genera ningún archivo digital en esta respuesta.</p>`;
+      ${notaResp}`;
   } else {
     centro += `
       <div class="field-block">
