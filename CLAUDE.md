@@ -21,36 +21,40 @@ Esta carpeta cubre **únicamente el panel del Funcionario Académico**. Los
 paneles de Estudiante y Decano viven en otras carpetas, cada una con su
 propio `CLAUDE.md`; no los edites desde aquí.
 
-## 2. DECISIÓN CLAVE — la Resolución es 100% física, no se toca en código
+## 2. DECISIÓN CLAVE — la Resolución es un documento digital (PDF), solo para CM y CA
 
-Por reglamento de la Universidad del Cauca **no se admiten firmas digitales**.
-Esto ya está implementado correctamente en el código actual (no lo
-retrocedas) y debe seguir así en cualquier cambio futuro:
+**Actualizado 2026-09-30**: esta sección reemplaza la decisión anterior ("la
+Resolución es 100% física"). La regla de negocio cambió y fue validada con
+el usuario (Andersson Camilo Bonilla Belalcázar): la Resolución de
+Cancelación de Matrícula y Cancelación de Asignatura ahora **sí** es un
+documento digital en PDF que el Funcionario **adjunta** desde la
+aplicación (nunca lo redacta ni lo genera ahí), tanto si la decisión final
+es **Aprobada** como si es **Rechazada**. Examen Supletorio sigue **sin
+generar Resolución nunca**.
 
-- **Paso "Remitir al Decano"**: solo hay un botón "Remitir al Decano", **sin
-  ningún documento adjunto ni generado**. La Resolución no existe todavía en
-  este punto del trámite (ver `funcionario.html` ~línea 1218: el propio
-  diálogo aclara que "la Resolución no se genera en este paso").
-- **Notificación al Estudiante tras la decisión del Decano**: el modal que
-  informa la decisión al Estudiante muestra únicamente un mensaje de texto
-  — "debe acercarse a la Decanatura a firmar la Resolución", dentro de los
-  cinco (5) días siguientes — **sin ningún archivo adjunto** (ver
-  ~línea 1246-1252). No agregues botones de "Adjuntar PDF", "Generar
-  Resolución" ni "Subir escaneo" en este flujo.
-- **Historial de Respuestas**: cuando se muestra el detalle de una solicitud
-  ya aprobada, el texto indica que la Resolución fue "firmada físicamente
-  por el Decano", que el original se entregó al Estudiante y las copias
-  quedaron archivadas en Decanatura y en DARCA — de nuevo, sin archivo
-  digital (ver ~línea 1080-1087).
-- **Pendiente de decisión (próxima reunión):** aún no se sabe si en algún
-  momento se subirá un **escaneo** de la Resolución ya firmada físicamente,
-  como archivo digital de consulta/archivo. Mientras no se confirme, no
-  implementes nada relacionado con esto; si un requerimiento nuevo lo
-  pidiera, trátalo como punto abierto y consúltalo antes de construir algo.
-- Examen Supletorio **nunca genera Resolución**, apruebe o rechace el
-  Decano — eso ya está correctamente señalado en el código
-  (`dialog-note`: "Este proceso no genera Resolución; la decisión se
-  comunica directamente al Estudiante").
+- **Cuándo se pide la Resolución** (nunca antes de que exista una decisión):
+  - Al **rechazar directamente** una solicitud `Pendiente` (`abrirRechazo`,
+    sin pasar por el Decano) — CM/CA únicamente.
+  - Al **enviar la respuesta al Estudiante** después de la decisión del
+    Decano (`abrirRespuesta`, estado `Pendiente Notificar`) — CM/CA
+    únicamente, tanto si el Decano aprobó como si rechazó.
+  - **Nunca** en "Remitir al Decano" (`abrirRemision`): en ese punto del
+    trámite el Decano todavía no ha decidido, así que la Resolución no
+    puede existir todavía — esto no cambió.
+  - **Nunca** para Examen Supletorio, en ningún paso.
+- **Cómo se aporta el documento**: únicamente adjuntando un archivo PDF ya
+  existente (zona de carga, campo obligatorio, bloquea el envío si falta).
+  No hay ninguna opción para redactar/generar la Resolución desde la
+  aplicación — el documento siempre lo produce el Decano/Decanatura fuera
+  del sistema. El nombre del archivo adjuntado se guarda en `r.resolucion`.
+- **Detalle de la solicitud**: la tarjeta "Resolución" se muestra siempre
+  que `r.resolucion` exista (CM/CA, aprobada o rechazada), con botones
+  Visualizar/Descargar — igual que los demás documentos adjuntos del
+  detalle. Para Examen Supletorio esa tarjeta nunca aparece.
+- Los mensajes al Estudiante y los toasts de confirmación mencionan que la
+  Resolución queda archivada en Decanatura y en DARCA, igual que antes,
+  pero ahora como documento digital disponible para descarga, no solo como
+  trámite físico.
 
 ## 3. Modelo de estados (relativos al Funcionario)
 
@@ -138,17 +142,19 @@ debe renderizarlos todos.
   (aprobadas o rechazadas). Sin botones de editar, reabrir, reasignar ni
   eliminar.
 - Columnas: Nombre, Documento, Tipo de proceso, Decisión (Aprobada/Rechazada,
-  diferenciadas visualmente), Acciones (Ver detalle · Descargar resolución
-  condicional).
+  diferenciadas visualmente), Acciones (solo Ver detalle; la tabla no tiene
+  una acción de descarga propia).
 - Filtros: Tipo de proceso, Decisión (Aprobada/Rechazada/Todos), Documento.
   No hay filtro por estado aquí (todo está en `Respondida`).
-- "Descargar resolución" solo aparece si Decisión = Aprobada **y** Tipo de
-  proceso ∈ {Cancelación de Matrícula, Cancelación de Asignatura}. Nunca
-  para Examen Supletorio ni para rechazadas.
+- "Descargar resolución" vive dentro de "Ver detalle" (tarjeta "Resolución"
+  del detalle, sección 5.1), no como acción de la fila de la tabla. Aparece
+  siempre que `r.resolucion` exista **y** Tipo de proceso ∈ {Cancelación de
+  Matrícula, Cancelación de Asignatura} — tanto si la Decisión fue Aprobada
+  como Rechazada (ver sección 2). Nunca para Examen Supletorio.
   - **Punto abierto sin resolver**: la especificación original (HU-07
     Escenario 2) pedía descargar **dos copias en carpetas separadas** (DARCA
-    y DECANATURA); la sección de Respuestas solo contempla una descarga.
-    Falta unificar esto — no lo decidas por tu cuenta, pregúntalo.
+    y DECANATURA); el detalle solo contempla una descarga. Falta unificar
+    esto — no lo decidas por tu cuenta, pregúntalo.
 
 ## 7. Vista Mi Usuario
 
@@ -197,15 +203,17 @@ Sí está en alcance: la línea de tiempo del trámite dentro del detalle.
 4. Si además de la observación de rechazo hay otro documento del cierre que
    deba listarse en el detalle de Respuestas (p. ej. constancia de
    verificación de pago).
-5. **Si se subirá o no, más adelante, un escaneo de la Resolución firmada**
-   — pendiente para la próxima reunión (ver sección 2).
-6. Si el campo Programa va como columna/filtro de la tabla o solo en el
+5. Si el campo Programa va como columna/filtro de la tabla o solo en el
    detalle (hoy solo está en el detalle).
 
 ## 12. Qué NO hacer aquí
 
-- No generar, adjuntar, descargar ni simular firma digital de la Resolución
-  en "Remitir al Decano" ni en la notificación al Estudiante.
+- No generar, adjuntar ni ofrecer la Resolución en "Remitir al Decano": en
+  ese punto del trámite el Decano todavía no ha decidido, así que el
+  documento no puede existir (esto no cambió con la sección 2).
+- No agregar ningún flujo de Resolución (adjuntar, generar, descargar) para
+  Examen Supletorio, en ningún estado — solo aplica a Cancelación de
+  Matrícula y Cancelación de Asignatura.
 - No resolver por tu cuenta los puntos abiertos de la sección 11 — pregunta
   antes de decidir.
 - No tocar archivos de las carpetas de Estudiante o Decano desde aquí.

@@ -831,6 +831,11 @@
               <div class="card-body" id="dComprobante"></div>
             </div>
 
+            <div class="card" id="dResolucionCard" hidden>
+              <div class="card-head"><h2>Resolución</h2></div>
+              <div class="card-body" id="dResolucion"></div>
+            </div>
+
             <div class="card" id="dMotivoRechazoCard" hidden>
               <div class="card-head"><h2>Motivo del rechazo</h2></div>
               <div class="card-body" id="dMotivoRechazo"></div>
@@ -902,9 +907,14 @@ const DATA = [
    asignaturas:[{cod:'8508219-M', nombre:'Control Digital'}]},
   {rad:'2026-ES-0144', est:'Juan Sebastián Paz',     doc:'1004556612', codigo:'104622010144', correo:'jspaz@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.ES, fecha:'2026-07-27T11:22', estado:'Enviar Recibo', decisionDecano:'Aprobada', just:'Solicito examen supletorio de Bases de Datos por calamidad doméstica presentada el día de la evaluación.', anexos:['Solicitud firmada.pdf','Certificado de defunción.pdf'],
    examen:'Bases de Datos', codExamen:'8506110-M', grupo:'B', fechaExamen:'2026-07-11', propuesta:'2026-08-04', telefono:'3204561278', firmaDocente:'Firma docente - Ing. Salazar.pdf', causa:'otra'},
-  {rad:'2026-CM-0142', est:'Diana Carolina Bolaños', doc:'1061223344', codigo:'104622010142', correo:'dbolanos@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T16:48', estado:'Pendiente Notificar', decisionDecano:'Aprobada', resolucion:'Resolución 0142-2026.pdf', just:'Solicito la cancelación de matrícula por traslado laboral fuera de la ciudad de Popayán a partir del mes de agosto.', anexos:['Solicitud firmada.pdf','Carta laboral.pdf','Historia académica.pdf'],
+  {rad:'2026-CM-0142', est:'Diana Carolina Bolaños', doc:'1061223344', codigo:'104622010142', correo:'dbolanos@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T16:48', estado:'Pendiente Notificar', decisionDecano:'Aprobada', just:'Solicito la cancelación de matrícula por traslado laboral fuera de la ciudad de Popayán a partir del mes de agosto.', anexos:['Solicitud firmada.pdf','Carta laboral.pdf','Historia académica.pdf'],
    asignaturas:[{cod:'8506201-M', nombre:'Ingeniería de Software I'},{cod:'8506205-M', nombre:'Redes de Computadores'},{cod:'8506210-M', nombre:'Sistemas Operativos'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-24'},{entidad:'División Financiera', archivo:'Paz y salvo Financiero.pdf', fecha:'2026-07-25'}]},
+  {rad:'2026-CM-0143', est:'Julián David Bastidas',   doc:'1067556699', codigo:'104622010143', correo:'jbastidas@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-26T08:50', estado:'Pendiente Notificar', decisionDecano:'Rechazada', just:'Solicito la cancelación de matrícula por motivos personales que me impiden continuar con normalidad el semestre académico.', anexos:['Solicitud firmada.pdf','Carta de exposición de motivos.pdf'],
+   asignaturas:[{cod:'8506501-M', nombre:'Ingeniería de Software III'},{cod:'8506505-M', nombre:'Gestión de Proyectos'}],
+   pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-24'}]},
+  {rad:'2026-CA-0132', est:'Natalia Ximena Cerón',    doc:'1069887744', codigo:'104622010132', correo:'nxceron@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T13:15', estado:'Pendiente Notificar', decisionDecano:'Aprobada', just:'Solicito la cancelación de la asignatura Electrónica de Potencia por incompatibilidad de horario con una asignatura de énfasis ya matriculada.', anexos:['Solicitud firmada.pdf','Horario académico.pdf'],
+   asignaturas:[{cod:'8509220-M', nombre:'Electrónica de Potencia'}]},
   {rad:'2026-CM-0146', est:'Andrea Sofía Realpe',     doc:'1065223311', codigo:'104622010146', correo:'asrealpe@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.CM, fecha:'2026-07-25T09:30', estado:'En Gestión', esperaDe:'Decano', just:'Solicito la cancelación de matrícula del semestre por diagnóstico médico que requiere tratamiento prolongado, según certificación adjunta.', anexos:['Solicitud firmada.pdf','Certificado médico especializado.pdf'],
    asignaturas:[{cod:'8506401-M', nombre:'Compiladores'},{cod:'8506405-M', nombre:'Sistemas Distribuidos'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-23'}]},
@@ -914,7 +924,7 @@ const DATA = [
    asignaturas:[{cod:'8509118-M', nombre:'Electrónica Analógica II'}]},
   {rad:'2026-ES-0138', est:'Valeria Astudillo',      doc:'1062556677', codigo:'104622010138', correo:'vastudillo@unicauca.edu.co', prog:'Ingeniería de Sistemas',      proc:PROC.ES, fecha:'2026-07-24T09:03', estado:'Respondida', decision:'Aprobada', decisionDecano:'Aprobada', recibo:'Recibo de pago - 2026-ES-0138.pdf', comprobante:'Comprobante de pago.pdf', just:'Solicito examen supletorio de Ingeniería de Software por participación en la representación deportiva de la Universidad.', anexos:['Solicitud firmada.pdf','Certificado de Bienestar.pdf'],
    examen:'Ingeniería de Software', codExamen:'8506201-M', grupo:'A', fechaExamen:'2026-07-10', propuesta:'2026-08-02', telefono:'3112349087', firmaDocente:'Firma docente - Ing. Bolaños.pdf', causa:'otra'},
-  {rad:'2026-CM-0136', est:'Óscar Iván Chicangana',  doc:'1059334455', codigo:'104622010136', correo:'ochicangana@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CM, fecha:'2026-07-23T14:30', estado:'Respondida', decision:'Rechazada', observacion:'No se anexó soporte suficiente que justifique la cancelación por motivos económicos alegados.', just:'Solicito la cancelación de matrícula por razones económicas que me impiden sostener el semestre en curso.', anexos:['Solicitud firmada.pdf','Declaración de renta familiar.pdf'],
+  {rad:'2026-CM-0136', est:'Óscar Iván Chicangana',  doc:'1059334455', codigo:'104622010136', correo:'ochicangana@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CM, fecha:'2026-07-23T14:30', estado:'Respondida', decision:'Rechazada', resolucion:'Resolución 0136-2026.pdf', observacion:'No se anexó soporte suficiente que justifique la cancelación por motivos económicos alegados.', just:'Solicito la cancelación de matrícula por razones económicas que me impiden sostener el semestre en curso.', anexos:['Solicitud firmada.pdf','Declaración de renta familiar.pdf'],
    asignaturas:[{cod:'8510103-M', nombre:'Automatización Industrial'},{cod:'8510108-M', nombre:'Instrumentación Industrial'}],
    pazYSalvos:[{entidad:'Biblioteca', archivo:'Paz y salvo Biblioteca.pdf', fecha:'2026-07-20'}]},
   {rad:'2026-CA-0133', est:'Sara Camila Yandi',      doc:'1064112233', codigo:'104622010133', correo:'syandi@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.CA, fecha:'2026-07-22T08:57', estado:'Pendiente',  just:'Solicito la cancelación de la asignatura Redes de Computadores por incompatibilidad con el horario de la asignatura homologada.', anexos:['Solicitud firmada.pdf','Acta de homologación.pdf'],
@@ -939,7 +949,7 @@ const DATA = [
   {rad:'2026-ES-0130', est:'Juan Diego Trochez',      doc:'1054223399', codigo:'104622010130', correo:'jdtrochez@unicauca.edu.co', prog:'Tecnología en Telemática',    proc:PROC.ES, fecha:'2026-07-16T08:15', estado:'Respondida', decision:'Rechazada', decisionDecano:'Aprobada', recibo:'Recibo de pago - 2026-ES-0130.pdf', comprobante:'Comprobante de pago.pdf', observacion:'El comprobante adjunto corresponde a un valor distinto al establecido para el examen supletorio.', just:'Solicito examen supletorio de Redes de Computadores por cruce de horario con la evaluación de Sistemas Operativos, programada el mismo día y hora.', anexos:['Solicitud firmada.pdf','Visto bueno del docente.pdf'],
    examen:'Redes de Computadores', codExamen:'8511112-M', grupo:'A', fechaExamen:'2026-07-05', propuesta:'2026-07-27', telefono:'3187765544', firmaDocente:'Firma docente - Ing. Palacios.pdf', causa:'cruce',
    cruce:{asignatura:'Sistemas Operativos', codigo:'8506210-M', fecha:'2026-07-27', hora:'10:00', firmaDocente:'Firma docente cruce - Ing. Ospina.pdf'}},
-  {rad:'2026-CA-0126', est:'Juliana Andrea Botina',   doc:'1052667733', codigo:'104622010126', correo:'jabotina@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-13T09:00', estado:'Respondida', decision:'Rechazada', decisionDecano:'Rechazada', observacion:'El Consejo de Facultad determinó que la justificación presentada no cumple con las causales establecidas en el reglamento estudiantil para la cancelación de asignaturas.', just:'Solicito la cancelación de la asignatura Control de Procesos por bajo rendimiento académico durante el semestre.', anexos:['Solicitud firmada.pdf','Historia académica.pdf'],
+  {rad:'2026-CA-0126', est:'Juliana Andrea Botina',   doc:'1052667733', codigo:'104622010126', correo:'jabotina@unicauca.edu.co', prog:'Ingeniería en Automática Industrial', proc:PROC.CA, fecha:'2026-07-13T09:00', estado:'Respondida', decision:'Rechazada', decisionDecano:'Rechazada', resolucion:'Resolución 0126-2026.pdf', observacion:'El Consejo de Facultad determinó que la justificación presentada no cumple con las causales establecidas en el reglamento estudiantil para la cancelación de asignaturas.', just:'Solicito la cancelación de la asignatura Control de Procesos por bajo rendimiento académico durante el semestre.', anexos:['Solicitud firmada.pdf','Historia académica.pdf'],
    asignaturas:[{cod:'8510215-M', nombre:'Control de Procesos'}]}
 ];
 
@@ -1529,6 +1539,26 @@ function abrirDetallePagina(rad, origen){
     document.getElementById('dComprobante').innerHTML = '';
   }
 
+  const resolucionCard = document.getElementById('dResolucionCard');
+  if(r.proc !== PROC.ES && r.resolucion){
+    resolucionCard.hidden = false;
+    const aprobadaRes = r.decision === 'Aprobada';
+    document.getElementById('dResolucion').innerHTML = `
+      <div class="comprobante-destacado">
+        <span class="anexo-name">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A3A86" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+          <span>${r.resolucion}<small>${aprobadaRes ? 'Resolución de aprobación' : 'Resolución de rechazo'} · archivada en Decanatura y en DARCA</small></span>
+        </span>
+        <span class="anexo-actions">
+          <button class="link-btn" type="button">Visualizar</button>
+          <button class="link-btn" type="button">Descargar</button>
+        </span>
+      </div>`;
+  } else {
+    resolucionCard.hidden = true;
+    document.getElementById('dResolucion').innerHTML = '';
+  }
+
   /* ---- Sidebar ---- */
   const motivoRechazoCard = document.getElementById('dMotivoRechazoCard');
   if(origen === 'respuestas' && r.decision !== 'Aprobada'){
@@ -1707,6 +1737,40 @@ function cerrarAccion(){
   if(accionLastFocus) accionLastFocus.focus();
 }
 
+function renderResolucionBlock(){
+  return `
+    <div class="field-block">
+      <label>Resolución <span class="req">*</span></label>
+      <label class="upload-zone" for="aResFile" id="aResZone">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3B6FD4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M12 4l-3.5 3.5M12 4l3.5 3.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <span><b>Haz clic para adjuntar</b> la Resolución en PDF</span>
+      </label>
+      <input type="file" id="aResFile" accept="application/pdf" hidden>
+      <p class="upload-filename" id="aResNombre" hidden></p>
+      <p class="field-error" id="aResError" hidden>Debes adjuntar la Resolución en PDF antes de continuar.</p>
+    </div>`;
+}
+
+function wireResolucionBlock(){
+  document.getElementById('aResFile').addEventListener('change', e => {
+    const archivo = e.target.files[0];
+    const nombre = document.getElementById('aResNombre');
+    if(archivo){
+      nombre.textContent = archivo.name;
+      nombre.hidden = false;
+      document.getElementById('aResError').hidden = true;
+      document.getElementById('aResZone').classList.remove('is-invalid');
+    } else {
+      nombre.hidden = true;
+    }
+  });
+}
+
+function obtenerResolucion(){
+  const archivo = document.getElementById('aResFile').files[0];
+  return archivo ? archivo.name : null;
+}
+
 function abrirRechazo(rad){
   const r = DATA.find(x => x.rad === rad);
   if(!r) return;
@@ -1716,15 +1780,18 @@ function abrirRechazo(rad){
   document.getElementById('aTitle').textContent = 'Rechazar solicitud';
   llenarDatosEstudiante(r);
 
-  const motivoPredeterminado = r.proc === PROC.ES
-    ? 'La solicitud no cumple con los requisitos establecidos.'
-    : 'La solicitud no cumple con los requisitos establecidos. Debe acercarse a la Decanatura a firmar la Resolución.';
-  document.getElementById('aCentro').innerHTML = `
+  const esSupletorioRech = r.proc === PROC.ES;
+  const motivoPredeterminado = 'La solicitud no cumple con los requisitos establecidos.';
+  let centroRechazo = `
     <div class="field-block">
       <label for="aObs">Motivo y justificación del rechazo <span class="req">*</span></label>
       <textarea id="aObs" rows="4" placeholder="Describe el motivo y la justificación del rechazo de la solicitud...">${motivoPredeterminado}</textarea>
       <p class="field-error" id="aObsError" hidden>Debes registrar el motivo y la justificación del rechazo.</p>
     </div>`;
+  if(!esSupletorioRech) centroRechazo += renderResolucionBlock();
+
+  document.getElementById('aCentro').innerHTML = centroRechazo;
+  if(!esSupletorioRech) wireResolucionBlock();
 
   document.getElementById('aFoot').innerHTML = `
     <button class="btn btn-ghost" data-close>Cancelar</button>
@@ -1779,14 +1846,16 @@ function abrirRespuesta(rad){
       ${chip}
     </div>`;
 
+  const esSupletorioResp = r.proc === PROC.ES;
+
   if(aprobada){
-    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada. Debe acercarse a la Decanatura a firmar la Resolución dentro de los cinco (5) días siguientes a esta notificación.`;
+    const mensaje = `Su solicitud de ${r.proc} ha sido aprobada. La Resolución quedará archivada y disponible según lo indicado en esta notificación.`;
     centro += `
       <div class="field-block">
         <label for="aMensaje">Mensaje para el Estudiante</label>
         <textarea id="aMensaje" rows="3">${mensaje}</textarea>
       </div>
-      <p class="dialog-note">La Resolución se firma físicamente en la Decanatura; no se adjunta ni se genera ningún archivo digital en esta respuesta.</p>`;
+      ${renderResolucionBlock()}`;
   } else {
     const motivoPredeterminado = 'La solicitud no cumple con los requisitos establecidos.';
     centro += `
@@ -1795,9 +1864,13 @@ function abrirRespuesta(rad){
         <textarea id="aObsResp" rows="4" placeholder="Registra el motivo del rechazo que se comunicará al Estudiante...">${motivoPredeterminado}</textarea>
         <p class="field-error" id="aObsRespError" hidden>Debes registrar la observación con el motivo del rechazo antes de enviar la respuesta.</p>
       </div>`;
+    centro += esSupletorioResp
+      ? `<p class="dialog-note">Este proceso no genera Resolución; la decisión se comunica directamente al Estudiante.</p>`
+      : renderResolucionBlock();
   }
 
   document.getElementById('aCentro').innerHTML = centro;
+  if(!esSupletorioResp) wireResolucionBlock();
 
   document.getElementById('aFoot').innerHTML = `
     <button class="btn btn-ghost" data-close>Cancelar</button>
@@ -1932,15 +2005,27 @@ function confirmarAccion(){
       campo.classList.add('is-invalid');
       return;
     }
+    let resolucionNombre = null;
+    if(r.proc !== PROC.ES){
+      resolucionNombre = obtenerResolucion();
+      if(!resolucionNombre){
+        document.getElementById('aResError').hidden = false;
+        document.getElementById('aResZone').classList.add('is-invalid');
+        return;
+      }
+    }
     err.hidden = true;
     campo.classList.remove('is-invalid');
     r.decision = 'Rechazada';
     r.observacion = obs;
     r.estado = 'Respondida';
+    if(resolucionNombre) r.resolucion = resolucionNombre;
     cerrarAccion();
     render();
     renderRespuestas();
-    mostrarToast('<b>Solicitud rechazada.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
+    mostrarToast(resolucionNombre
+      ? '<b>Solicitud rechazada.</b><br>Se notificó al Estudiante. La Resolución quedó archivada en Decanatura y en DARCA.'
+      : '<b>Solicitud rechazada.</b><br>Se notificó al Estudiante y el trámite quedó cerrado.');
     volverSiEnDetalle();
     return;
   }
@@ -1959,6 +2044,7 @@ function confirmarAccion(){
 
   if(accionModo === 'responder'){
     const aprobada = r.decisionDecano === 'Aprobada';
+    const esSupletorioResp = r.proc === PROC.ES;
     if(!aprobada){
       const campo = document.getElementById('aObsResp');
       const obs = campo.value.trim();
@@ -1974,13 +2060,27 @@ function confirmarAccion(){
     } else {
       r.mensajeRespuesta = document.getElementById('aMensaje').value.trim();
     }
+    let resolucionNombre = null;
+    if(!esSupletorioResp){
+      resolucionNombre = obtenerResolucion();
+      if(!resolucionNombre){
+        document.getElementById('aResError').hidden = false;
+        document.getElementById('aResZone').classList.add('is-invalid');
+        return;
+      }
+    }
     r.decision = r.decisionDecano;
     r.estado = 'Respondida';
+    if(resolucionNombre) r.resolucion = resolucionNombre;
     cerrarAccion();
     render();
     renderRespuestas();
-    if(aprobada){
-      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Debe acercarse a Decanatura a firmar la Resolución física. Una copia quedará archivada en <b>Decanatura</b> y otra se remitirá a <b>DARCA</b>.');
+    if(!esSupletorioResp){
+      mostrarToast(aprobada
+        ? '<b>Respuesta enviada al Estudiante.</b><br>La Resolución quedó archivada en <b>Decanatura</b> y en <b>DARCA</b>, disponible para descarga del Estudiante.'
+        : '<b>Respuesta enviada al Estudiante.</b><br>La Resolución de rechazo quedó archivada en <b>Decanatura</b> y en <b>DARCA</b>.');
+    } else if(aprobada){
+      mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Se notificó la aprobación del examen supletorio.');
     } else {
       mostrarToast('<b>Respuesta enviada al Estudiante.</b><br>Se notificó el rechazo de la solicitud y el trámite quedó cerrado.');
     }
